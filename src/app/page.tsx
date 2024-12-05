@@ -10,7 +10,6 @@ import { Product } from "./lib/shopify/types";
 
 export default function Home() {
   const { cart } = useCart();
-  console.log(cart, "cart");
   const [product, setProduct] = useState<Product | undefined>({
     variants: [],
     availableForSale: false,
@@ -28,18 +27,10 @@ export default function Home() {
     });
   }, []);
 
-  // const menu = await getMenu("testmenu");
-  // const products = await getProducts({});
-  // const product = await getProduct("test_product");
-  // console.log(menu);
-  // console.log(products);
-  // console.log(product, "product");
-
-  // useEffect(() => {
-  //   if (!cart) {
-  //     createCartAndSetCookie();
-  //   }
-  // }, [cart]);
-
-  return <AddToCart product={product} />;
+  return (
+    <>
+      <AddToCart product={product} />
+      <button onClick={() => console.log(cart)}>cart</button>
+    </>
+  );
 }
