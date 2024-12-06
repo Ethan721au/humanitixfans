@@ -26,24 +26,27 @@ import { cookies } from "next/headers";
 // }
 
 export async function addItem(
-  prevState: any,
+  // prevState: any,
   selectedVariantId: string | undefined
 ) {
   const cookieStore = await cookies();
   const cartId = cookieStore.get("cartId")?.value;
+  console.log(cartId, "cartId");
+  console.log(selectedVariantId, "selectedVariantId");
 
   if (!cartId || !selectedVariantId) {
-    return "Error adding item to cart";
+    return "Error adding item to cart - 1";
   }
 
   try {
     const newCart = await addToCart(cartId, [
       { merchandiseId: selectedVariantId, quantity: 1 },
     ]);
+    return newCart;
     // revalidateTag(TAGS.cart);
-    console.log(newCart, "newCart");
+    // console.log(newCart, "newCart");
   } catch (error) {
-    return "Error adding item to cart";
+    return "Error adding item to cart - 2";
   }
 }
 

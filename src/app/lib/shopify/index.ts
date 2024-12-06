@@ -28,11 +28,9 @@ type ExtractVariables<T> = T extends { variables: object }
   ? T["variables"]
   : never;
 
-const domain = process.env.SHOPIFY_STORE_DOMAIN;
-// const key = process.env.SHOPIFY_ACCESS_TOKEN;
-const key = "1e1ee830c3cfb7825a1bd501b6a13f25";
-// const endpoint = `${domain}${SHOPIFY_GRAPHQL_API_ENDPOINT}`;
-const endpoint = `https://humanitixfans.myshopify.com/api/2024-10/graphql.json`;
+const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
+const key = process.env.NEXT_PUBLIC_SHOPIFY_ACCESS_TOKEN;
+const endpoint = `${domain}${SHOPIFY_GRAPHQL_API_ENDPOINT}`;
 
 export async function shopifyFetch<T>({
   cache = "force-cache",
@@ -52,7 +50,7 @@ export async function shopifyFetch<T>({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": key,
+        "X-Shopify-Storefront-Access-Token": key!,
         ...headers,
       },
       body: JSON.stringify({
@@ -152,7 +150,7 @@ export async function getMenu(handle: string): Promise<Menu[]> {
     res.body?.data?.menu?.items.map((item: { title: string; url: string }) => ({
       title: item.title,
       path: item.url
-        .replace(domain, "")
+        .replace(domain!, "")
         .replace("/collections", "/search")
         .replace("/pages", ""),
     })) || []
