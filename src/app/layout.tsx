@@ -3,6 +3,8 @@ import "./globals.css";
 import { CartProvider } from "./hooks/useCart";
 import { cookies } from "next/headers";
 import { getCart } from "./lib/shopify";
+import { ProductProvider } from "./hooks/useProduct";
+import NavBar from "./components/NavBar/page";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,13 +19,16 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const cartId = cookieStore.get("cartId")?.value;
   const cart = getCart(cartId);
-  const cartPromise = await cart;
-  console.log(cartPromise, "cartPromise");
 
   return (
     <html lang="en">
       <body>
-        <CartProvider cartPromise={cart}>{children}</CartProvider>
+        <CartProvider cartPromise={cart}>
+          <ProductProvider>
+            <NavBar />
+            {children}
+          </ProductProvider>
+        </CartProvider>
       </body>
     </html>
   );

@@ -1,3 +1,6 @@
+"use client";
+
+import { useParams } from "next/navigation";
 import { createContext, useContext, useMemo } from "react";
 
 type ProductState = {
@@ -19,13 +22,16 @@ export const ProductProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const params = useParams();
+
   const value = useMemo(
     () => ({
-      state,
-      updateOption,
-      updateImage,
+      params,
+      // state,
+      // updateOption,
+      // updateImage,
     }),
-    [state]
+    [params]
   );
 
   return (

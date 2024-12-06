@@ -1,24 +1,15 @@
 "use client";
 
-import {
-  createContext,
-  use,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, use, useContext, useMemo, useOptimistic } from "react";
 import { Cart, CartItem, Product, ProductVariant } from "../lib/shopify/types";
-import { getCart } from "../lib/shopify";
 
 type UpdateType = "plus" | "minus" | "delete";
 
 // merchandiseId is a required field for cart mutations (cannot be productId or variantId)
 type CartContextType = {
-  cart: Cart;
+  cart: Cart | undefined;
   // updateCartItem: (merchandiseId: string, updateType: UpdateType) => void;
   addCartItem: (variant: ProductVariant, product: Product) => void;
-  setCart: (cart: Cart) => void;
 };
 
 type CartAction =
@@ -110,25 +101,15 @@ export const CartProvider = ({
   children: React.ReactNode;
   cartPromise: Promise<Cart | undefined>;
 }) => {
-  // const initialCart = use(cartPromise);
-  // console.log(initialCart, "initialCart");
-  const [cart, setCart] = useState<Cart>(createEmptyCart());
+  const initialCart = use(cartPromise);
 
-  useEffect(() => {
-    getCart();
-  }, []);
+  const [optimisticCart, updateOptimisticCart] = useOptimistic(
+    initialCart,
+    cartReducer
+  );
 
-  const getCart = async () => {
-    console.log("getting cart");
-    const cart = await cartPromise;
-    console.log(cart, "cart");
-    if (cart) {
-      setCart(cart);
-    }
-  };
-
-  const updateCart = (action: CartAction) => {
-    const currentCart = cart;
+  function cartReducer(state: Cart | undefined, action: CartAction): Cart {
+    const currentCart = state || createEmptyCart();
 
     switch (action.type) {
       case "ADD_ITEM": {
@@ -154,18 +135,24 @@ export const CartProvider = ({
           lines: updatedLines,
         };
 
-        setCart(updatedCart);
+        return updatedCart;
       }
       default:
         return currentCart;
     }
-  };
+  }
 
   const addCartItem = (variant: ProductVariant, product: Product) => {
-    updateCart({ type: "ADD_ITEM", payload: { variant, product } });
+    updateOptimisticCart({ type: "ADD_ITEM", payload: { variant, product } });
   };
 
-  const value = { cart, addCartItem, setCart };
+  const value = useMemo(
+    () => ({
+      cart: optimisticCart,
+      addCartItem,
+    }),
+    [optimisticCart]
+  );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
