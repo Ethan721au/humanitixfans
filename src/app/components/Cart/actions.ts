@@ -1,12 +1,13 @@
 "use server";
 
 import { TAGS } from "@/app/lib/constants";
-import { addToCart, createCart } from "@/app/lib/shopify";
+import { addToCart, createCart, getCart } from "@/app/lib/shopify";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function addItem(
-  prevState: any,
+  prevState: unknown,
   selectedVariantId: string | undefined
 ) {
   const cookieStore = await cookies();
@@ -22,8 +23,28 @@ export async function addItem(
     ]);
     revalidateTag(TAGS.cart);
   } catch (error) {
+    console.log(error);
     return "Error adding item to cart";
   }
+}
+
+export async function redirectToCheckout() {
+  const cookieStore = await cookies();
+  const cartId = cookieStore.get("cartId")?.value;
+
+  if (!cartId) {
+    // return "Missing cart ID";
+    return;
+  }
+
+  const cart = await getCart(cartId);
+
+  if (!cart) {
+    // return "Error fetching cart";
+    return;
+  }
+
+  redirect(cart.checkoutUrl);
 }
 
 export async function createCartAndSetCookie() {

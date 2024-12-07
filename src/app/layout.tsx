@@ -4,7 +4,7 @@ import { CartProvider } from "./hooks/useCart";
 import { cookies } from "next/headers";
 import { getCart } from "./lib/shopify";
 import { ProductProvider } from "./hooks/useProduct";
-import NavBar from "./components/NavBar/page";
+import Header from "./components/Header/page";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,7 +25,7 @@ export default async function RootLayout({
       <body>
         <CartProvider cartPromise={cart}>
           <ProductProvider>
-            <NavBar />
+            <Header />
             {children}
           </ProductProvider>
         </CartProvider>
