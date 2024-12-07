@@ -27,7 +27,7 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Wrapper>
       <TextWrapper>
-        <Title>{product.handle}</Title>
+        <Title>{product.title}</Title>
         <Description>{product.description}</Description>
       </TextWrapper>
       <PriceWrapper>
