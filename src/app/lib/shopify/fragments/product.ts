@@ -40,6 +40,9 @@ export const productFragment = /* GraphQl */ `
             amount
             currencyCode
           }
+          image {
+            ...image
+           }
         }
       }
     }

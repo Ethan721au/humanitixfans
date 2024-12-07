@@ -7,8 +7,9 @@ import { useActionState } from "react";
 
 export function AddToCart({ product }: { product: Product }) {
   const { variants } = product;
-  const { addCartItem } = useCart();
+  const { addCartItem, cart } = useCart();
   const [message, formAction] = useActionState(addItem, null);
+  console.log(cart);
 
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
 
