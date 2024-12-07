@@ -1,9 +1,9 @@
-import { getProducts } from "@/app/lib/shopify";
-import ProductCard from "../ProductCard/ProductCard";
+import { getCollections } from "@/app/lib/shopify";
 import { CardWrapper, Subtitle, Title, Wrapper } from "./styled";
+import CollectionCard from "../CollectionCard/CollectionCard";
 
 export default async function ProductDisplay() {
-  const products = await getProducts({});
+  const collections = await getCollections();
 
   return (
     <Wrapper>
@@ -12,9 +12,11 @@ export default async function ProductDisplay() {
         Lorem ipsum dolor sit amet, consectetur adipiscing elit
       </Subtitle>
       <CardWrapper>
-        {products.map((product, idx) => (
-          <ProductCard key={idx} product={product} />
-        ))}
+        {collections.map((collection, idx) => {
+          if (collection.handle !== "") {
+            return <CollectionCard key={idx} collection={collection} />;
+          }
+        })}
       </CardWrapper>
     </Wrapper>
   );
