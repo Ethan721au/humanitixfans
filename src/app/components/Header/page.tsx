@@ -11,9 +11,18 @@ import {
   LogoWrapper,
   Wrapper,
 } from "./styled";
+import { useEffect } from "react";
+import { createCartAndSetCookie } from "../Cart/actions";
 
 export default function Header() {
   const { cart } = useCart();
+  console.log(cart);
+
+  useEffect(() => {
+    if (!cart) {
+      createCartAndSetCookie();
+    }
+  }, [cart]);
 
   return (
     <Wrapper>

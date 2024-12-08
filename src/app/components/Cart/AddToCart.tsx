@@ -7,14 +7,15 @@ import { useActionState } from "react";
 
 export function AddToCart({ product }: { product: Product }) {
   const { variants } = product;
-  const { addCartItem, cart } = useCart();
+  const { addCartItem } = useCart();
   const [message, formAction] = useActionState(addItem, null);
-  console.log(cart);
 
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
+  console.log("defaultVariantId", defaultVariantId);
 
   const finalVariant = variants[0];
   const actionWithVariant = formAction.bind(null, defaultVariantId);
+  // console.log("finalVariant", finalVariant);
 
   return (
     <form
