@@ -63,3 +63,28 @@ export const LogoRightSectionBottomText = styled.div`
   letter-spacing: -0.264px;
   color: #1b1b1b;
 `;
+
+export const CartIconWrapper = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  text-decoration: none;
+  position: relative;
+`;
+
+export const CountBubble = styled.div`
+  position: absolute;
+  background-color: black;
+  color: white;
+  height: 17px;
+  width: 17px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  bottom: 7px;
+  left: 5px;
+  line-height: calc(1 + 0.1 / var(--font-body-scale));
+`;

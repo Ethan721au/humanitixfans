@@ -112,10 +112,7 @@ export type CartProduct = {
 
 export type CartItem = {
   id: string | undefined;
-  attributes: {
-    key: string;
-    value: string;
-  }[];
+  attributes: Attributes[];
   quantity: number;
   cost: {
     totalAmount: Money;
@@ -177,6 +174,7 @@ export type ShopifyAddToCartOperation = {
     lines: {
       merchandiseId: string;
       quantity: number;
+      attributes: Attributes[];
     }[];
   };
 };
