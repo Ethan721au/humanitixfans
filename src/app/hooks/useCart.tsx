@@ -1,7 +1,13 @@
 "use client";
 
 import { createContext, use, useContext, useMemo, useOptimistic } from "react";
-import { Cart, CartItem, Product, ProductVariant } from "../lib/shopify/types";
+import {
+  Attributes,
+  Cart,
+  CartItem,
+  Product,
+  ProductVariant,
+} from "../lib/shopify/types";
 
 type UpdateType = "plus" | "minus" | "delete";
 
@@ -9,7 +15,11 @@ type UpdateType = "plus" | "minus" | "delete";
 type CartContextType = {
   cart: Cart | undefined;
   // updateCartItem: (merchandiseId: string, updateType: UpdateType) => void;
-  addCartItem: (variant: ProductVariant, product: Product) => void;
+  addCartItem: (
+    variant: ProductVariant,
+    product: Product,
+    attributes: Attributes[]
+  ) => void;
 };
 
 type CartAction =
@@ -19,7 +29,11 @@ type CartAction =
     }
   | {
       type: "ADD_ITEM";
-      payload: { variant: ProductVariant; product: Product };
+      payload: {
+        variant: ProductVariant;
+        product: Product;
+        attributes: Attributes[];
+      };
     };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -30,6 +44,7 @@ function createEmptyCart(): Cart {
     checkoutUrl: "",
     totalQuantity: 0,
     lines: [],
+    attributes: [],
     cost: {
       subtotalAmount: { amount: "0", currencyCode: "USD" },
       totalAmount: { amount: "0", currencyCode: "USD" },
@@ -66,7 +81,8 @@ function updateCartTotals(
 function createOrUpdateCartItem(
   existingItem: CartItem | undefined,
   variant: ProductVariant,
-  product: Product
+  product: Product,
+  attributes: Attributes[]
 ): CartItem {
   const quantity = existingItem ? existingItem.quantity + 1 : 1;
   const totalAmount = calculateItemCost(quantity, variant.price.amount);
@@ -74,6 +90,7 @@ function createOrUpdateCartItem(
   return {
     id: existingItem?.id,
     quantity,
+    attributes: product.productType === "add-on" ? attributes : [],
     cost: {
       totalAmount: {
         amount: totalAmount,
@@ -113,14 +130,15 @@ export const CartProvider = ({
 
     switch (action.type) {
       case "ADD_ITEM": {
-        const { variant, product } = action.payload;
+        const { variant, product, attributes } = action.payload;
         const existingItem = currentCart.lines.find(
           (item) => item.merchandise.id === variant.id
         );
         const updatedItem = createOrUpdateCartItem(
           existingItem,
           variant,
-          product
+          product,
+          attributes
         );
 
         const updatedLines = existingItem
@@ -142,8 +160,15 @@ export const CartProvider = ({
     }
   }
 
-  const addCartItem = (variant: ProductVariant, product: Product) => {
-    updateOptimisticCart({ type: "ADD_ITEM", payload: { variant, product } });
+  const addCartItem = (
+    variant: ProductVariant,
+    product: Product,
+    attributes: Attributes[]
+  ) => {
+    updateOptimisticCart({
+      type: "ADD_ITEM",
+      payload: { variant, product, attributes },
+    });
   };
 
   const value = useMemo(

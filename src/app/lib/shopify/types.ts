@@ -74,6 +74,7 @@ export type ShopifyProduct = {
   images: Connection<Image>;
   seo: SEO;
   tags: string[];
+  productType: string;
   updatedAt: string;
 };
 
@@ -111,6 +112,10 @@ export type CartProduct = {
 
 export type CartItem = {
   id: string | undefined;
+  attributes: {
+    key: string;
+    value: string;
+  }[];
   quantity: number;
   cost: {
     totalAmount: Money;
@@ -151,8 +156,14 @@ export type ShopifyCreateCartOperation = {
   data: { cartCreate: { cart: ShopifyCart } };
 };
 
+export type Attributes = {
+  key: string;
+  value: string;
+};
+
 export type Cart = Omit<ShopifyCart, "lines"> & {
   lines: CartItem[];
+  attributes: Attributes[];
 };
 
 export type ShopifyAddToCartOperation = {

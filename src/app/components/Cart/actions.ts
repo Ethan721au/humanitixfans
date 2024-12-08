@@ -8,7 +8,8 @@ import { redirect } from "next/navigation";
 
 export async function addItem(
   prevState: unknown,
-  selectedVariantId: string | undefined
+  selectedVariantId: string | undefined,
+  attributes: { key: string; value: string }[] | []
 ) {
   const cookieStore = await cookies();
   const cartId = cookieStore.get("cartId")?.value;
@@ -19,7 +20,7 @@ export async function addItem(
 
   try {
     await addToCart(cartId, [
-      { merchandiseId: selectedVariantId, quantity: 1 },
+      { merchandiseId: selectedVariantId, quantity: 1, attributes: attributes },
     ]);
     revalidateTag(TAGS.cart);
   } catch (error) {

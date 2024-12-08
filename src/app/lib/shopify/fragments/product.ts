@@ -60,6 +60,7 @@ export const productFragment = /* GraphQl */ `
       ...seo
     }
     tags
+    productType
     updatedAt
     }
     ${imageFragment}

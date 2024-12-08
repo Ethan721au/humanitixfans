@@ -10,7 +10,6 @@ export default async function ProductPage({
 }) {
   const { handle } = await params;
   const product = await getProduct(handle);
-  console.log(product);
 
   return (
     <div

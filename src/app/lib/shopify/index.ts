@@ -13,6 +13,7 @@ import {
 import { getMenuQuery } from "./queries/menu";
 import { getProductQuery, getProductsQuery } from "./queries/product";
 import {
+  Attributes,
   Cart,
   Collection,
   Connection,
@@ -258,7 +259,7 @@ export async function getCart(
 
 export async function addToCart(
   cartId: string,
-  lines: { merchandiseId: string; quantity: number }[]
+  lines: { merchandiseId: string; quantity: number; attributes: Attributes[] }[]
 ): Promise<Cart> {
   const res = await shopifyFetch<ShopifyAddToCartOperation>({
     query: addToCartMutation,
