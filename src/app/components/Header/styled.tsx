@@ -19,7 +19,6 @@ export const Wrapper = styled.div`
 export const LogoWrapper = styled(Link)`
   display: flex;
   gap: 12px;
-  text-decoration: none;
 `;
 
 export const LogoLeftSection = styled.div`
@@ -69,14 +68,14 @@ export const CartIconWrapper = styled.a`
   align-items: center;
   justify-content: center;
   height: 40px;
-  text-decoration: none;
   position: relative;
 `;
 
 export const CountBubble = styled.div`
   position: absolute;
-  background-color: black;
-  color: white;
+  font-weight: bold;
+  background-color: #ffb593;
+  color: black;
   height: 17px;
   width: 17px;
   border-radius: 100%;

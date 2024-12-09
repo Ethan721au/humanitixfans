@@ -15,7 +15,6 @@ export const Wrapper = styled(Link)`
   align-items: center;
   gap: 8px;
   margin-top: 24px;
-  text-decoration: none;
   font-size: 18px;
   font-weight: 700;
   line-height: 22px;

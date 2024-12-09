@@ -186,6 +186,7 @@ export type Collection = ShopifyCollection & {
 export type ShopifyCollection = {
   handle: string;
   title: string;
+  image: Image;
   description: string;
   seo: SEO;
   updatedAt: string;
