@@ -3,14 +3,8 @@
 import { useActionState, useState } from "react";
 import Form from "next/form";
 import { getFormData } from "./test";
-import {
-  ImageContainer,
-  ImageWrapper,
-  ProductContainer,
-  Wrapper,
-} from "./styled";
+import { Wrapper } from "./styled";
 import { Product } from "@/app/lib/shopify/types";
-// import Input from "../Input/Input";
 import Button from "../Button/Button";
 import { Input } from "./Input/Input";
 import Products from "./Products";
@@ -24,6 +18,9 @@ export default function ProductForm({
 }) {
   const [message, action, isPending] = useActionState(getFormData, "");
   console.log(products, "products");
+  console.log(message, "message");
+  const [additionalOptions, setAdditionalOptions] = useState(false);
+  console.log(additionalOptions, "addOns");
 
   const addOns = products.filter((p) => p.productType === "add-on");
 

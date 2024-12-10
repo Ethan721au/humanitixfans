@@ -1,7 +1,6 @@
 "use client";
 
 import styled from "styled-components";
-import { InputTypes } from "./Input/Input";
 
 export const Wrapper = styled.div`
   border: 1px solid #e5e5e5;

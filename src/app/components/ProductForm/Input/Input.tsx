@@ -1,8 +1,5 @@
-"use client";
-
 import { Product } from "@/app/lib/shopify/types";
 import {
-  Checkbox,
   ImageContainer,
   ImageWrapper,
   InputField,
@@ -37,16 +34,11 @@ export const Input = ({ product, type, name, label }: InputProps) => {
           </ImageContainer>
         </ImageWrapper>
       )}
+
       {type === "checkbox" && <div data-attr="checkbox">{tick}</div>}
       {type !== "text" && (
         <Label>{`${label} (+$${Number(product?.variants[0].price.amount).toFixed(0)})`}</Label>
       )}
-      <InputField
-        type="text"
-        name="sdfsf"
-        defaultValue=""
-        data-attr="additionalInfo"
-      />
     </ProductContainer>
   );
 };

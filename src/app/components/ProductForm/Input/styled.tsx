@@ -9,15 +9,13 @@ export const ProductContainer = styled.label<{
   display: flex;
   gap: 10px;
   align-items: ${({ type }) => (type === "text" ? "flex-start" : "center")};
-  /* flex-direction: ${({ type }) => (type === "text" ? "column" : "row")}; */
   flex-direction: ${({ type }) => (type === "text" ? "column" : "row")};
   padding-bottom: ${({ type }) => (type === "text" ? "30px" : "0")};
   width: 100%;
   min-width: 600px;
 
   input[type="radio"],
-  input[type="checkbox"],
-  input[data-attr="additionalInfo"] {
+  input[type="checkbox"] {
     display: none;
   }
 
@@ -44,29 +42,6 @@ export const ProductContainer = styled.label<{
   input[type="checkbox"]:checked + div[data-attr="checkbox"] svg {
     display: block;
   }
-
-  input[type="checkbox"]:checked ~ input[data-attr="additionalInfo"] {
-    display: block;
-  }
-
-  /* input[type="checkbox"]:checked + div[data-attr="testing"] {
-    display: block;
-  } */
-
-  /* input[type="checkbox"]:checked + input[data-attr="additionalInfo"] {
-    display: block;
-    opacity: 1;
-  } */
-
-  /* input[data-attr="additionalInfo"][type="checkbox"]:checked + input {
-    position: relative;
-    opacity: 1;
-  } */
-
-  /* input[data-attr="additionalInfo"] {
-    display: none;
-    pointer-events: none;
-  } */
 `;
 
 export const ImageWrapper = styled.div`
