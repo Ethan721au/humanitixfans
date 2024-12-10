@@ -5,8 +5,6 @@ import styled from "styled-components";
 export const Wrapper = styled.div`
   padding-top: 72px;
   min-height: 100vh;
-  /* display: flex;
-  flex-direction: column; */
 `;
 
 export const Breadcrumbs = styled.div`
@@ -17,4 +15,8 @@ export const Breadcrumbs = styled.div`
 
 export const ProductSection = styled.section`
   padding-top: 36px;
+  padding-left: 30px;
+  padding-right: 30px;
+  display: flex;
+  justify-content: space-between;
 `;

@@ -74,7 +74,7 @@ export const CartIconWrapper = styled.a`
 export const CountBubble = styled.div`
   position: absolute;
   font-weight: bold;
-  background-color: #ffb593;
+  background-color: var(--primary-peach);
   color: black;
   height: 17px;
   width: 17px;
