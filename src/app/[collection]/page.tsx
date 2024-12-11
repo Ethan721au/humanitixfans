@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { redirectToCheckout } from "../components/Cart/actions";
-import { AddToCart } from "../components/Cart/AddToCart";
 import { getCollectionProducts, getCollections } from "../lib/shopify";
 import { Breadcrumbs, ProductSection, Wrapper } from "./styled";
 import Image from "next/image";
@@ -18,7 +17,6 @@ export default async function CollectionPage({
   });
   const { title: title, image: image } =
     collections.find((c) => c.handle === collection) || {};
-  // console.log(collections, "collections");
 
   return (
     <Wrapper>
@@ -37,17 +35,10 @@ export default async function CollectionPage({
             "Default image"
           )}
         </div>
-        <ProductForm products={products} collection={collection} />
-
-        {/* {products.map((product, idx) => (
-          <div key={idx}>
-            {product.title}
-            <AddToCart product={product} />
-          </div>
-        ))} */}
+        <ProductForm products={products} />
       </ProductSection>
       <form action={redirectToCheckout}>
-        <button>add</button>
+        <button>checkout</button>
       </form>
     </Wrapper>
   );

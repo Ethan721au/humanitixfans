@@ -1,3 +1,5 @@
+"use client";
+
 import { Product } from "@/app/lib/shopify/types";
 import {
   ImageContainer,
@@ -13,20 +15,30 @@ export type InputTypes = "radio" | "checkbox" | "text";
 type InputProps = {
   product?: Product;
   type: InputTypes;
-  name: string;
+  name: string | undefined;
   label: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: boolean;
 };
 
-export const Input = ({ product, type, name, label }: InputProps) => {
+export const Input = ({
+  product,
+  type,
+  name,
+  label,
+  onChange,
+  value,
+}: InputProps) => {
   return (
     <ProductContainer type={type}>
       {type === "text" && <Label>{label}</Label>}
       <InputField
         type={type}
         name={name}
-        defaultValue={product?.title ? product.title : ""}
+        onChange={onChange}
+        checked={value}
+        value={product?.title}
       />
-
       {product?.featuredImage && (
         <ImageWrapper>
           <ImageContainer>
@@ -34,7 +46,6 @@ export const Input = ({ product, type, name, label }: InputProps) => {
           </ImageContainer>
         </ImageWrapper>
       )}
-
       {type === "checkbox" && <div data-attr="checkbox">{tick}</div>}
       {type !== "text" && (
         <Label>{`${label} (+$${Number(product?.variants[0].price.amount).toFixed(0)})`}</Label>
