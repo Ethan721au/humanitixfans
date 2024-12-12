@@ -5,6 +5,7 @@ type FormDataResult = {
 const attributeValues = {
   "Quote up to 8 words": "quote",
   Personalization: "personalization",
+  "Character name": "characterName",
 };
 
 export const extractAttributes = (formData: FormData) => {

@@ -22,6 +22,8 @@ export default function ProductForm({ products }: { products: Product[] }) {
     formData: FormData
   ): Promise<FormData> {
     const product = products.find((p) => p.title === formData.get("product"));
+    const addOns = formData.getAll("addOns");
+    console.log(addOns, "addOns");
     const variant = product?.variants[0];
     const variantId = variant?.id;
     const attributes = extractAttributes(formData);
