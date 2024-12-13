@@ -4,7 +4,11 @@ import {
   TAGS,
 } from "../constants";
 import { isShopifyError } from "../type-guards";
-import { addToCartMutation, createCartMutation } from "./mutations/cart";
+import {
+  addToCartMutation,
+  addToCartTestMutation,
+  createCartMutation,
+} from "./mutations/cart";
 import { getCartQuery } from "./queries/cart";
 import {
   getCollectionProductsQuery,
@@ -263,6 +267,24 @@ export async function addToCart(
 ): Promise<Cart> {
   const res = await shopifyFetch<ShopifyAddToCartOperation>({
     query: addToCartMutation,
+    variables: {
+      cartId,
+      lines,
+    },
+    cache: "no-cache",
+  });
+
+  return reshapeCart(res.body.data.cartLinesAdd.cart);
+}
+
+///// to be removed below /////
+
+export async function addToCartTest(
+  cartId: string,
+  lines: { merchandiseId: string; quantity: number; attributes: Attributes[] }[]
+): Promise<Cart> {
+  const res = await shopifyFetch<ShopifyAddToCartOperation>({
+    query: addToCartTestMutation,
     variables: {
       cartId,
       lines,
