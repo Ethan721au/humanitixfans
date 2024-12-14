@@ -7,6 +7,7 @@ import {
   InputField,
   Label,
   ProductContainer,
+  Select,
 } from "./styled";
 import Image from "next/image";
 
@@ -32,20 +33,29 @@ export const Input = ({
   return (
     <ProductContainer type={type}>
       {type === "text" && <Label>{label}</Label>}
-      <InputField
-        type={type}
-        name={name}
-        onChange={onChange}
-        checked={value}
-        value={product?.title}
-      />
-      {product?.featuredImage && (
+      {/* {name !== "send-in-item" && (
+        <InputField
+          type={type}
+          name={name}
+          onChange={onChange}
+          checked={value}
+          value={product?.title}
+        />
+      )} */}
+      <Select id="product" name="product">
+        {product?.variants.map((variant, idx) => (
+          <option key={idx} value={variant.title}>
+            {variant.title}
+          </option>
+        ))}
+      </Select>
+      {/* {product?.featuredImage && (
         <ImageWrapper>
           <ImageContainer>
             <Image src={product.featuredImage.url} alt="" fill />
           </ImageContainer>
         </ImageWrapper>
-      )}
+      )} */}
       {type === "checkbox" && <div data-attr="checkbox">{tick}</div>}
       {type !== "text" && (
         <Label>{`${label} (+$${Number(product?.variants[0].price.amount).toFixed(0)})`}</Label>

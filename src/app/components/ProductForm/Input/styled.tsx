@@ -67,6 +67,7 @@ export const Label = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  font-weight: bold;
 `;
 
 export const InputField = styled.input`
@@ -80,4 +81,11 @@ export const InputField = styled.input`
     outline: var(--focused-base-outline);
     outline-offset: var(--focused-base-outline-offset);
   }
+`;
+
+export const Select = styled.select`
+  width: 100%;
+  outline: none;
+  border-radius: 4px;
+  border: 1px solid #e5e5e5;
 `;
