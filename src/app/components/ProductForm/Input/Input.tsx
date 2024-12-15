@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/app/lib/shopify/types";
+import { Product, ProductVariant } from "@/app/lib/shopify/types";
 import {
   ImageContainer,
   ImageWrapper,
@@ -14,16 +14,19 @@ import Image from "next/image";
 export type InputTypes = "radio" | "checkbox" | "text";
 
 type InputProps = {
-  product?: Product;
+  product?: Product | ProductVariant;
+  products?: Product[] | ProductVariant[];
   type: InputTypes;
-  name: string | undefined;
-  label: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  value?: boolean;
+  name?: string;
+  label?: string;
+  // onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: any;
+  value?: string;
 };
 
 export const Input = ({
   product,
+  products,
   type,
   name,
   label,
@@ -33,32 +36,30 @@ export const Input = ({
   return (
     <ProductContainer type={type}>
       {type === "text" && <Label>{label}</Label>}
-      {/* {name !== "send-in-item" && (
-        <InputField
-          type={type}
-          name={name}
-          onChange={onChange}
-          checked={value}
-          value={product?.title}
-        />
-      )} */}
-      <Select id="product" name="product">
-        {product?.variants.map((variant, idx) => (
-          <option key={idx} value={variant.title}>
-            {variant.title}
-          </option>
-        ))}
-      </Select>
-      {/* {product?.featuredImage && (
+      {name !== "send-in-item" && name !== "variant" && (
+        <InputField type={type} name={name} onChange={onChange} value={value} />
+      )}
+      {(name === "send-in-item" || name === "variant") && products && (
+        <Select id={name} name={name} onChange={onChange}>
+          {[{ title: "--Select a product--", handle: "" }, ...products].map(
+            (product) => (
+              <option key={product.title} value={product.handle}>
+                {product.title}
+              </option>
+            )
+          )}
+        </Select>
+      )}
+      {product?.featuredImage && (
         <ImageWrapper>
           <ImageContainer>
             <Image src={product.featuredImage.url} alt="" fill />
           </ImageContainer>
         </ImageWrapper>
-      )} */}
+      )}
       {type === "checkbox" && <div data-attr="checkbox">{tick}</div>}
       {type !== "text" && (
-        <Label>{`${label} (+$${Number(product?.variants[0].price.amount).toFixed(0)})`}</Label>
+        <Label>{`${label} (+$${Number(product?.price.amount).toFixed(0)})`}</Label>
       )}
     </ProductContainer>
   );

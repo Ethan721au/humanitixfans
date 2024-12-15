@@ -12,7 +12,6 @@ export const ProductContainer = styled.label<{
   flex-direction: ${({ type }) => (type === "text" ? "column" : "row")};
   padding-bottom: ${({ type }) => (type === "text" ? "30px" : "0")};
   width: 100%;
-  min-width: 600px;
 
   input[type="radio"],
   input[type="checkbox"] {

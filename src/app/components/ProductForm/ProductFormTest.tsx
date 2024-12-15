@@ -14,7 +14,7 @@ import { addItem } from "../Cart/actions";
 export default function ProductFormTest({ product }: { product: Product }) {
   const { addCartItem } = useCart();
   const [message, action, isPending] = useActionState(updateCart, null);
-  console.log(product, "product");
+  // console.log(product, "product");
 
   // const addOns = products.filter((p) => p.productType === "add-on");
 
@@ -40,6 +40,7 @@ export default function ProductFormTest({ product }: { product: Product }) {
   return (
     <Wrapper>
       <Form action={action}>
+        {/* <ProductList product={product} /> */}
         <Input
           label={`${product?.title} type *`}
           name={product?.handle}
