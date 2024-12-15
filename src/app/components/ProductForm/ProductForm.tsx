@@ -41,9 +41,13 @@ export default function ProductForm({
   return (
     <Wrapper>
       <Form action={action}>
-        <Products products={products} type="text" name={collection} />
+        {products && (
+          <Products products={products} type="text" name={collection} />
+        )}
         <Input label="Ink color *" name="inkColor" type="text" />
-        <Products products={variants} type="checkbox" name="addOns" />
+        {variants && (
+          <Products products={variants} type="checkbox" name="addOns" />
+        )}
         <button>Add to cart</button>
         {message}
       </Form>

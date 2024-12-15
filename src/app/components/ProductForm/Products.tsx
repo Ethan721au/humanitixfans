@@ -80,7 +80,11 @@ export default function Products({
               onChange={handleItemChecked(addOn.id)}
             />
             {checkedItems[addOn.id] && (
-              <Input label={`${addOn.title} *`} name={addOn.id} type="text" />
+              <Input
+                label={`${addOn.title} *`}
+                name={addOn.title}
+                type="text"
+              />
             )}
           </div>
         ))}
