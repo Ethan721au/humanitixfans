@@ -41,13 +41,11 @@ export const Input = ({
       )}
       {(name === "send-in-item" || name === "variant") && products && (
         <Select id={name} name={name} onChange={onChange}>
-          {[{ title: "--Select a product--", handle: "" }, ...products].map(
-            (product) => (
-              <option key={product.title} value={product.handle}>
-                {product.title}
-              </option>
-            )
-          )}
+          {[{ title: "--Select a product--" }, ...products].map((product) => (
+            <option key={product.title} value={product.handle}>
+              {product.title}
+            </option>
+          ))}
         </Select>
       )}
       {product?.featuredImage && (

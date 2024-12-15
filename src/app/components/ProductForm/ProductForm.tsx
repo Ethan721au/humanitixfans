@@ -6,9 +6,9 @@ import { Wrapper } from "./styled";
 import { Product } from "@/app/lib/shopify/types";
 import { Input } from "./Input/Input";
 import Products from "./Products";
-import AddOns from "./AddOns";
+// import AddOns from "./AddOns";
 import { useCart } from "@/app/hooks/useCart";
-import { extractAttributes } from "@/app/lib/utils";
+import { prepareLines } from "@/app/lib/utils";
 import { addItem } from "../Cart/actions";
 
 export default function ProductForm({
@@ -28,18 +28,12 @@ export default function ProductForm({
     (p) => p.productType === "product"
   );
 
-  function updateCart(
+  async function updateCart(
     state: FormData | null,
     formData: FormData
   ): Promise<FormData> {
-    const formObject = Object.fromEntries(formData.entries());
-    console.log(formObject, "formObject");
-    // const product = products.find((p) => p.title === formData.get("product"));
-    // const addOns = formData.getAll("addOns");
-    // console.log(addOns, "addOns");
-    // const variant = product?.variants[0];
-    // const variantId = variant?.id;
-    // const attributes = extractAttributes(formData);
+    const lines = await prepareLines(formData, collection);
+
     // addCartItem(variant, product, attributes);
     // return addItem(state, variantId, attributes);
   }

@@ -1,5 +1,14 @@
+import { getProduct } from "./shopify";
+import { Attributes } from "./shopify/types";
+
 type FormDataResult = {
   [key: string]: string | string[];
+};
+
+type Line = {
+  merchandiseId?: string;
+  quantity?: number;
+  attributes?: Attributes[];
 };
 
 const attributeValues = {
@@ -34,4 +43,39 @@ export const extractAttributes = (formData: FormData) => {
   });
 
   return attributes;
+};
+
+export const prepareLines = async (formData: FormData, collection: string) => {
+  const lines: Line[] = [];
+  const items = Object.fromEntries(formData.entries());
+  console.log(items, "items");
+  const product = await getProduct(items[collection] as string);
+  const linesWithProduct = [
+    ...lines,
+    {
+      merchandiseId: product.variants[0].id,
+      quantity: 1,
+      attributes: [],
+    },
+  ];
+  const excludedKeys = ["send-in-item", "inkColor", "variant"];
+
+  const addOns = Object.entries(items)
+    .filter(([key]) => !excludedKeys.includes(key))
+    .map(([key]) => {
+      return {
+        merchandiseId: key,
+        quantity: 1,
+        attributes: [],
+      };
+    });
+
+  const linesWithAddOns = [...linesWithProduct, ...addOns];
+  console.log(linesWithAddOns, "linesWithAddOns");
+
+  const variant = product.variants.find((v) => v.title === items.variant);
+
+  console.log(addOns, "addOns");
+  console.log(product, "product");
+  console.log(variant, "variant");
 };
