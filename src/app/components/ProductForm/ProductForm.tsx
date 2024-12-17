@@ -1,9 +1,14 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Form from "next/form";
 import { Wrapper } from "./styled";
-import { Attributes, Product, ProductVariant } from "@/app/lib/shopify/types";
+import {
+  Attributes,
+  Collection,
+  Product,
+  ProductVariant,
+} from "@/app/lib/shopify/types";
 import { Input } from "./Input/Input";
 import Products from "./Products";
 import { useCart } from "@/app/hooks/useCart";
@@ -17,10 +22,12 @@ type Line = {
   attributes: { key: string; value: string }[];
 };
 
-const prepareLines = async (formData: FormData, collection: string) => {
+const prepareData = async (formData: FormData, collection: Collection) => {
   const items = Object.fromEntries(formData.entries());
-  const products = await getCollectionProducts({ collection });
-  const product = products.find((p) => p.handle === items[collection]);
+  const products = await getCollectionProducts({
+    collection: collection.handle,
+  });
+  const product = products.find((p) => p.handle === items[collection.title]);
   const variant =
     product?.variants.find((v) => v.title === items.variant) ||
     product?.variants[0];
@@ -61,8 +68,8 @@ const prepareOptimisticCart = (
   lines: Line[],
   products: Product[],
   addCartItem: (
-    variant: ProductVariant,
-    product: Product,
+    variant: ProductVariant | undefined,
+    product: Product | undefined,
     attributes: Attributes[]
   ) => void
 ) => {
@@ -82,19 +89,25 @@ const prepareOptimisticCart = (
 };
 
 export default function ProductForm({
-  collectionProducts,
   collection,
 }: {
-  collectionProducts: Product[];
-  collection: string;
+  collection: Collection;
 }) {
   const { addCartItem } = useCart();
+  const [collectionProducts, setCollectionProducts] = useState<
+    Product[] | undefined
+  >(undefined);
   const [message, action, isPending] = useActionState(updateCart, null);
 
-  const { variants } = collectionProducts.filter(
-    (p) => p.productType === "add-on"
-  )[0];
-  const products = collectionProducts.filter(
+  useEffect(() => {
+    getCollectionProducts({ collection: collection.handle }).then((products) =>
+      setCollectionProducts(products)
+    );
+  }, []);
+
+  const addOns = collectionProducts?.filter((p) => p.handle === "add-ons")[0];
+
+  const products = collectionProducts?.filter(
     (p) => p.productType === "product"
   );
 
@@ -102,7 +115,8 @@ export default function ProductForm({
     state: FormData | null,
     formData: FormData
   ): Promise<FormData | string> {
-    const { lines, products } = await prepareLines(formData, collection);
+    const { lines, products } = await prepareData(formData, collection);
+
     prepareOptimisticCart(lines, products, addCartItem);
     return addItem(state, lines);
   }
@@ -111,13 +125,17 @@ export default function ProductForm({
     <Wrapper>
       <Form action={action}>
         {products && (
-          <Products products={products} type="text" name={collection} />
+          <Products products={products} type="text" name={collection.title} />
         )}
-        <Input label="Ink color *" name="inkColor" type="text" />
-        {variants && (
-          <Products products={variants} type="checkbox" name="addOns" />
+        <Input label="Ink color *" name="inkColor" type="text" bold={true} />
+        {addOns && (
+          <Products
+            products={addOns.variants}
+            type="checkbox"
+            name={addOns.title}
+          />
         )}
-        <button>{isPending ? "adding to cart" : "add to cart"}</button>
+        <button>{isPending ? "adding to cart..." : "add to cart"}</button>
       </Form>
     </Wrapper>
   );

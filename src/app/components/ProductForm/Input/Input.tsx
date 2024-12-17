@@ -22,6 +22,7 @@ type InputProps = {
   // onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onChange?: any;
   value?: string;
+  bold?: boolean;
 };
 
 export const Input = ({
@@ -32,14 +33,15 @@ export const Input = ({
   label,
   onChange,
   value,
+  bold,
 }: InputProps) => {
   return (
     <ProductContainer type={type}>
-      {type === "text" && <Label>{label}</Label>}
-      {name !== "send-in-item" && name !== "variant" && (
+      {type === "text" && <Label bold={bold ? "true" : "false"}>{label}</Label>}
+      {name !== "Send-in item" && name !== "variant" && (
         <InputField type={type} name={name} onChange={onChange} value={value} />
       )}
-      {(name === "send-in-item" || name === "variant") && products && (
+      {(name === "Send-in item" || name === "variant") && products && (
         <Select id={name} name={name} onChange={onChange}>
           {[{ title: "--Select a product--" }, ...products].map((product) => (
             <option key={product.title} value={product.handle}>
@@ -57,7 +59,9 @@ export const Input = ({
       )}
       {type === "checkbox" && <div data-attr="checkbox">{tick}</div>}
       {type !== "text" && (
-        <Label>{`${label} (+$${Number(product?.price.amount).toFixed(0)})`}</Label>
+        <Label
+          bold={bold ? "true" : "false"}
+        >{`${label} (+$${Number(product?.price.amount).toFixed(0)})`}</Label>
       )}
     </ProductContainer>
   );

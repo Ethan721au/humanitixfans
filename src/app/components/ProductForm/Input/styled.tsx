@@ -62,11 +62,13 @@ export const ImageContainer = styled.div`
   position: relative;
 `;
 
-export const Label = styled.div`
+export const Label = styled.div<{
+  bold?: string;
+}>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  font-weight: bold;
+  font-weight: ${({ bold }) => (bold === "true" ? "bold" : "normal")};
 `;
 
 export const InputField = styled.input`
