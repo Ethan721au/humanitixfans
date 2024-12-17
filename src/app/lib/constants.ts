@@ -7,3 +7,5 @@ export const TAGS = {
 export const HIDDEN_PRODUCT_TAG = "product_hidden";
 
 export const SHOPIFY_GRAPHQL_API_ENDPOINT = "/api/2024-10/graphql.json";
+
+export const excludedKeys = ["send-in-item", "inkColor", "variant"];

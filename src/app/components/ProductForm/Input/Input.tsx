@@ -43,7 +43,7 @@ export const Input = ({
         <Select id={name} name={name} onChange={onChange}>
           {[{ title: "--Select a product--" }, ...products].map((product) => (
             <option key={product.title} value={product.handle}>
-              {product.title}
+              {product.description || product.title}
             </option>
           ))}
         </Select>
