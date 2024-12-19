@@ -3,7 +3,7 @@ import "./globals.css";
 import { CartProvider } from "./hooks/useCart";
 import { cookies } from "next/headers";
 import { getCart } from "./lib/shopify";
-import { ProductProvider } from "./hooks/useProduct";
+// import { ProductProvider } from "./hooks/useProduct";
 import Header from "./components/Header/page";
 import Footer from "./components/Footer/Footer";
 
@@ -25,11 +25,11 @@ export default async function RootLayout({
     <html lang="en">
       <body>
         <CartProvider cartPromise={cart}>
-          <ProductProvider>
-            <Header />
-            {children}
-            <Footer />
-          </ProductProvider>
+          {/* <ProductProvider> */}
+          <Header />
+          {children}
+          <Footer />
+          {/* </ProductProvider> */}
         </CartProvider>
       </body>
     </html>
