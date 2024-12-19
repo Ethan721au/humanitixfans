@@ -15,12 +15,16 @@ export type InputTypes = "radio" | "checkbox" | "text";
 
 type InputProps = {
   product?: Product;
-  products?: Product[] | ProductVariant[];
+  products?:
+    | Product[]
+    | ProductVariant[]
+    | { title: string; handle: string; description: string; id: string }[];
   type: InputTypes;
   name?: string;
   label?: string;
-  // onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onChange?: any;
+  onChange?: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
   value?: string;
   bold?: boolean;
 };
@@ -43,8 +47,8 @@ export const Input = ({
       )}
       {(name === "Send-in item" || name === "variant") && products && (
         <Select id={name} name={name} onChange={onChange}>
-          {[{ title: "--Select a product--" }, ...products].map((product) => (
-            <option key={product.title} value={product.handle}>
+          {[defaultSelection, ...products].map((product) => (
+            <option key={product.id} value={product.handle}>
               {product.description || product.title}
             </option>
           ))}
@@ -65,6 +69,13 @@ export const Input = ({
       )}
     </ProductContainer>
   );
+};
+
+const defaultSelection = {
+  title: "--Select a product--",
+  handle: "",
+  description: "",
+  id: "",
 };
 
 const tick = (

@@ -1,3 +1,11 @@
+import Link from "next/link";
+
 export default function CartPage() {
-  return <div>CartPage</div>;
+  return (
+    <div>
+      <Link href="/">
+        <strong>Home</strong>
+      </Link>
+    </div>
+  );
 }

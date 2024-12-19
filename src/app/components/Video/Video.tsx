@@ -10,6 +10,12 @@ import {
   Subtitle,
 } from "./styled";
 import useWindowSize from "@/app/hooks/useWindowSize";
+import { video } from "@/app/lib/constants";
+
+export const initialVideoSize = {
+  clipPath: "inset(0%)",
+  matrix: "matrix(1, 0, 0, 1, 0, 0)",
+};
 
 export default function Video() {
   const { isMobile } = useWindowSize();
@@ -56,13 +62,3 @@ export default function Video() {
     </Wrapper>
   );
 }
-
-const video = {
-  desktop: "https://static.humanitix.com/website/videos/hx_home.mp4",
-  mobile: "https://static.humanitix.com/website/videos/hx_home_mobile.mp4",
-};
-
-const initialVideoSize = {
-  clipPath: "inset(0%)",
-  matrix: "matrix(1, 0, 0, 1, 0, 0)",
-};

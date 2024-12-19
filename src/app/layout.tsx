@@ -27,7 +27,9 @@ export default async function RootLayout({
         <CartProvider cartPromise={cart}>
           {/* <ProductProvider> */}
           <Header />
-          {children}
+          <div style={{ paddingTop: "72px", minHeight: "100vh" }}>
+            {children}
+          </div>
           <Footer />
           {/* </ProductProvider> */}
         </CartProvider>

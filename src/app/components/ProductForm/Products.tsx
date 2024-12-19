@@ -23,14 +23,18 @@ export default function Products({
   const [checkedItems, setCheckedItems] = useState(defaultCheckedItems);
 
   const handleItemChecked =
-    (id: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    (id: string) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const target = e.target as HTMLInputElement;
       setCheckedItems((prev) => ({
         ...prev,
-        [id]: e.target.checked,
+        [id]: target.checked,
       }));
     };
 
-  const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = async (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     if (e.target.value === "comic-books") {
       const product = await getProduct(e.target.value);
       setProduct(product);
@@ -49,7 +53,7 @@ export default function Products({
               type="text"
               onChange={handleChange}
               name={name}
-              label={name}
+              label={`${name} *`}
               bold
             />
             {product && product.variants.length > 0 && (
@@ -57,31 +61,37 @@ export default function Products({
                 products={product?.variants}
                 type="text"
                 name="variant"
-                label={product?.options[0].name}
+                label={`${product?.options[0].name} *`}
+                bold
               />
             )}
           </>
         );
       }
       case "Add On": {
-        return products.map((addOn) => (
-          <div key={addOn.id}>
-            <Input
-              product={addOn}
-              type={type}
-              label={addOn.title}
-              onChange={handleItemChecked(addOn.id)}
-            />
-            {checkedItems[addOn.id] && (
-              <Input
-                label={`${addOn.title} *`}
-                name={addOn.title}
-                type="text"
-                bold
-              />
-            )}
+        return (
+          <div>
+            <div>Autograph add-ons</div>
+            {products.map((addOn) => (
+              <div key={addOn.id}>
+                <Input
+                  product={addOn}
+                  type={type}
+                  label={addOn.title}
+                  onChange={handleItemChecked(addOn.id)}
+                />
+                {checkedItems[addOn.id] && (
+                  <Input
+                    label={`${addOn.title} *`}
+                    name={addOn.title}
+                    type="text"
+                    bold
+                  />
+                )}
+              </div>
+            ))}
           </div>
-        ));
+        );
       }
       default:
         return products.map((product) => (

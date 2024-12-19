@@ -17,7 +17,7 @@ import { getCollectionProducts } from "@/app/lib/shopify";
 import { excludedKeys } from "@/app/lib/constants";
 
 type Line = {
-  merchandiseId: string | undefined;
+  merchandiseId: string;
   quantity: number;
   attributes: { key: string; value: FormDataEntryValue }[];
 };
@@ -39,6 +39,10 @@ const prepareData = async (formData: FormData, collection: Collection) => {
     const merchandiseId = products
       .find((p) => p.handle === "add-ons")
       ?.variants.find((v) => v.title === key)?.id as string;
+
+    if (!merchandiseId) {
+      throw new Error(`Merchandise ID not found for add-on: ${key}`);
+    }
     return {
       merchandiseId,
       quantity: 1,
@@ -54,7 +58,7 @@ const prepareData = async (formData: FormData, collection: Collection) => {
   });
 
   const variantId = {
-    merchandiseId: variant?.id,
+    merchandiseId: variant?.id || "",
     quantity: 1,
     attributes,
   };
@@ -68,8 +72,8 @@ const prepareOptimisticCart = (
   lines: Line[],
   products: Product[],
   addCartItem: (
-    variant: ProductVariant | undefined,
-    product: Product | undefined,
+    variant: ProductVariant,
+    product: Product,
     attributes: Attributes[]
   ) => void
 ) => {
@@ -78,13 +82,16 @@ const prepareOptimisticCart = (
       p.variants.some((v) => v.id === line.merchandiseId)
     );
     const variant = product?.variants.find((v) => v.id === line.merchandiseId);
-    const attributes = line.attributes.map((attr) => {
-      return {
-        key: attr.key,
-        value: attr.value,
-      };
-    });
-    addCartItem(variant, product, attributes);
+    const attributes = line.attributes.map((attr) => ({
+      key: attr.key,
+      value: attr.value,
+    }));
+
+    if (variant && product) {
+      addCartItem(variant, product, attributes);
+    } else {
+      console.error("Skipping item due to missing product or variant:", line);
+    }
   });
 };
 
@@ -98,6 +105,7 @@ export default function ProductForm({
     Product[] | undefined
   >(undefined);
   const [message, action, isPending] = useActionState(updateCart, null);
+  console.log(message);
 
   useEffect(() => {
     getCollectionProducts({ collection: collection.handle }).then((products) =>
@@ -127,7 +135,7 @@ export default function ProductForm({
         {products && (
           <Products products={products} type="text" name={collection.title} />
         )}
-        <Input label="Ink color *" name="inkColor" type="text" bold={true} />
+        <Input label="Ink color *" name="inkColor" type="text" bold />
         {addOns && (
           <Products
             products={addOns.variants}

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirectToCheckout } from "../components/Cart/actions";
 import { getCollections } from "../lib/shopify";
-import { Breadcrumbs, ProductSection, Wrapper } from "./styled";
+import { Breadcrumbs, ProductSection } from "./styled";
 import Image from "next/image";
 import ProductForm from "../components/ProductForm/ProductForm";
 
@@ -15,7 +15,7 @@ export default async function CollectionPage({
   const collection = collections.find((c) => c.handle === slug);
 
   return (
-    <Wrapper>
+    <section>
       <Breadcrumbs>
         <Link href="/">
           <strong>Home</strong>
@@ -24,18 +24,16 @@ export default async function CollectionPage({
         <Link href={`/${collection?.handle}`}>{collection?.title}</Link>
       </Breadcrumbs>
       <ProductSection>
-        <div>
-          {collection?.image ? (
-            <Image src={collection.image.url} alt="" width={50} height={50} />
-          ) : (
-            "Default image"
-          )}
-        </div>
+        {collection?.image ? (
+          <Image src={collection.image.url} alt="" width={50} height={50} />
+        ) : (
+          "Default image"
+        )}
         {collection && <ProductForm collection={collection} />}
       </ProductSection>
       <form action={redirectToCheckout}>
         <button>checkout</button>
       </form>
-    </Wrapper>
+    </section>
   );
 }

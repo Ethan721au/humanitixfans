@@ -60,6 +60,7 @@ export type SEO = {
 export type ShopifyProduct = {
   id: string;
   handle: string;
+  price: Money;
   availableForSale: boolean;
   title: string;
   description: string;
@@ -89,6 +90,8 @@ export type Money = {
 
 export type ProductVariant = {
   id: string;
+  handle: string;
+  description: string;
   title: string;
   availableForSale: boolean;
   selectedOptions: {
