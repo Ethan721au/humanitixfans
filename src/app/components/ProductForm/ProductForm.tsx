@@ -17,9 +17,9 @@ import { getCollectionProducts } from "@/app/lib/shopify";
 import { excludedKeys } from "@/app/lib/constants";
 
 type Line = {
-  merchandiseId: string;
+  merchandiseId: string | undefined;
   quantity: number;
-  attributes: { key: string; value: string }[];
+  attributes: { key: string; value: FormDataEntryValue }[];
 };
 
 const prepareData = async (formData: FormData, collection: Collection) => {
@@ -38,7 +38,7 @@ const prepareData = async (formData: FormData, collection: Collection) => {
   const addOnsIds = addOns.map(([key]) => {
     const merchandiseId = products
       .find((p) => p.handle === "add-ons")
-      ?.variants.find((v) => v.title === key)?.id;
+      ?.variants.find((v) => v.title === key)?.id as string;
     return {
       merchandiseId,
       quantity: 1,
@@ -112,9 +112,9 @@ export default function ProductForm({
   );
 
   async function updateCart(
-    state: FormData | null,
+    state: FormData | null | string,
     formData: FormData
-  ): Promise<FormData | string> {
+  ): Promise<FormData | string | null> {
     const { lines, products } = await prepareData(formData, collection);
 
     prepareOptimisticCart(lines, products, addCartItem);

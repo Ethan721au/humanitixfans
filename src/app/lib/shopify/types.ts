@@ -155,7 +155,7 @@ export type ShopifyCreateCartOperation = {
 
 export type Attributes = {
   key: string;
-  value: string;
+  value: FormDataEntryValue;
 };
 
 export type Cart = Omit<ShopifyCart, "lines"> & {
