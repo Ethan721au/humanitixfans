@@ -14,7 +14,7 @@ import Image from "next/image";
 export type InputTypes = "radio" | "checkbox" | "text";
 
 type InputProps = {
-  product?: Product;
+  product?: Product | ProductVariant;
   products?:
     | Product[]
     | ProductVariant[]

@@ -99,6 +99,7 @@ export type ProductVariant = {
     value: string;
   }[];
   price: Money;
+  featuredImage: Image;
 };
 
 export type Product = Omit<ShopifyProduct, "variants" | "images"> & {
