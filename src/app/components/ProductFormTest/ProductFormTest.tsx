@@ -9,7 +9,7 @@ import Form from "next/form";
 import { useEffect, useState } from "react";
 
 type CartAttribute = {
-  key: string;
+  name: string;
   label: string;
   type: string;
   value: string;
@@ -110,14 +110,14 @@ export default function ProductFormTest({
       {cartAttributes[collection.handle as keyof typeof cartAttributes]?.map(
         (attribute: CartAttribute) => (
           <div
-            key={attribute.key}
+            key={attribute.name}
             style={{ display: "flex", flexDirection: "column" }}
           >
             <label htmlFor="cartAttribute">{attribute.label}</label>
             <input
               type={attribute.type}
               id="cartAttribute"
-              name={attribute.key}
+              name={attribute.name}
               // value={attribute.value}
             />
           </div>
