@@ -7,6 +7,7 @@ import { isShopifyError } from "../type-guards";
 import {
   addToCartMutation,
   addToCartTestMutation,
+  cartAttributesUpdates,
   createCartMutation,
 } from "./mutations/cart";
 import { getCartQuery } from "./queries/cart";
@@ -35,6 +36,7 @@ import {
   ShopifyProduct,
   ShopifyProductOperation,
   ShopifyProductsOperation,
+  ShopifyUpdateCartAttributesOperation,
 } from "./types";
 
 type ExtractVariables<T> = T extends { variables: object }
@@ -170,20 +172,6 @@ export async function getMenu(handle: string): Promise<Menu[]> {
   );
 }
 
-// temp
-
-// export async function getProducts() {
-//   const res = await shopifyFetch<ShopifyProductsOperation>({
-//     query: getProductsQuery,
-//     tags: [TAGS.products],
-//     variables: { first: 10 },
-//   });
-
-//   return res;
-// }
-
-// temp
-
 export async function getProducts({
   query,
   reverse,
@@ -277,22 +265,25 @@ export async function addToCart(
   return reshapeCart(res.body.data.cartLinesAdd.cart);
 }
 
-///// to be removed below /////
-
-export async function addToCartTest(
+export async function updateCartAttributes(
   cartId: string,
-  lines: { merchandiseId: string; quantity: number; attributes: Attributes[] }[]
+  attributes: Attributes[]
 ): Promise<Cart> {
-  const res = await shopifyFetch<ShopifyAddToCartOperation>({
-    query: addToCartTestMutation,
+  const res = await shopifyFetch<ShopifyUpdateCartAttributesOperation>({
+    query: cartAttributesUpdates,
     variables: {
       cartId,
-      lines,
+      attributes,
     },
     cache: "no-cache",
   });
 
-  return reshapeCart(res.body.data.cartLinesAdd.cart);
+  console.log(
+    reshapeCart(res.body.data.cartAttributesUpdate.cart),
+    "cartAttributesUpdate"
+  );
+
+  // return reshapeCart(res.body.data.cartLinesAdd.cart);
 }
 
 /// collection section /////

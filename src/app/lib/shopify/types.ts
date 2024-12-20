@@ -134,6 +134,7 @@ export type CartItem = {
 
 export type ShopifyCart = {
   id: string | undefined;
+  attributes: Attributes[];
   checkoutUrl: string;
   cost: {
     subtotalAmount: Money;
@@ -212,5 +213,17 @@ export type ShopifyCollectionProductsOperation = {
     handle: string;
     reverse?: boolean;
     sortKey?: string;
+  };
+};
+
+export type ShopifyUpdateCartAttributesOperation = {
+  data: {
+    cartAttributesUpdate: {
+      cart: ShopifyCart;
+    };
+  };
+  variables: {
+    cartId: string;
+    attributes: Attributes[];
   };
 };

@@ -2,10 +2,22 @@
 
 import { useCart } from "@/app/hooks/useCart";
 import { useTest } from "@/app/hooks/useTest";
+import { cartAttributes } from "@/app/lib/constants";
 import { getCollectionProducts } from "@/app/lib/shopify";
-import { Collection, Product } from "@/app/lib/shopify/types";
+import { Attributes, Collection, Product } from "@/app/lib/shopify/types";
 import Form from "next/form";
 import { useEffect, useState } from "react";
+
+type CartAttribute = {
+  key: string;
+  label: string;
+  type: string;
+  value: string;
+};
+
+// type CartAttributes = {
+//   [key: string]: CartAttribute[];
+// };
 
 export default function ProductFormTest({
   collection,
@@ -18,15 +30,18 @@ export default function ProductFormTest({
   >(undefined);
 
   const [selectedProduct, setSelectedProduct] = useState<string>();
-  console.log(selectedProduct, "selectedProduct");
+  const [selectedVariant, setSelectedVariant] = useState<string>();
+  const [attributes, setAttributes] = useState<Attributes[]>([]);
+  console.log(attributes, "attributes");
 
   useEffect(() => {
     if (cart) {
       const productLine = cart.lines.find(
         (line) => line.merchandise.product.handle !== "add-ons"
       ).merchandise;
-      console.log(productLine, "line");
       setSelectedProduct(productLine.product.handle);
+      setSelectedVariant(productLine.selectedOptions[0].value);
+      setAttributes(productLine.attributes);
     }
   }, [cart]);
 
@@ -47,18 +62,15 @@ export default function ProductFormTest({
   const productsWithVariants = products?.filter(
     (product) => product.variants.length > 1
   );
-  console.log(productsWithVariants, "productsWithVariants");
 
-  console.log(products, "products");
-
-  const testing = productsWithVariants?.find(
+  const productVariants = productsWithVariants?.find(
     (p) => p.handle === selectedProduct
   );
-  console.log(testing, "testing");
 
   const prepareItems = (formData: FormData) => {
-    const { product } = Object.fromEntries(formData.entries());
-    console.log(product, "items");
+    // const { product, variant } = Object.fromEntries(formData.entries());
+    const items = Object.fromEntries(formData.entries());
+    console.log(items, "items");
   };
 
   return (
@@ -77,16 +89,16 @@ export default function ProductFormTest({
             </option>
           ))}
         </select>
-        {testing && (
-          <div>
-            <label htmlFor="variant">{testing.options[0].name}</label>
+        {productVariants && (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label htmlFor="variant">{productVariants.options[0].name}</label>
             <select
               name="variant"
               id="variant"
-              value={cart.lines[3].merchandise.selectedOptions[0].value}
-              onChange={(e) => console.log(e)}
+              value={selectedVariant}
+              onChange={(e) => setSelectedVariant(e.target.value)}
             >
-              {testing.variants?.map((variant) => (
+              {productVariants.variants?.map((variant) => (
                 <option key={variant.id} value={variant.title}>
                   {variant.title}
                 </option>
@@ -95,6 +107,22 @@ export default function ProductFormTest({
           </div>
         )}
       </div>
+      {cartAttributes[collection.handle as keyof typeof cartAttributes]?.map(
+        (attribute: CartAttribute) => (
+          <div
+            key={attribute.key}
+            style={{ display: "flex", flexDirection: "column" }}
+          >
+            <label htmlFor="cartAttribute">{attribute.label}</label>
+            <input
+              type={attribute.type}
+              id="cartAttribute"
+              name={attribute.key}
+              // value={attribute.value}
+            />
+          </div>
+        )
+      )}
       <button>test</button>
     </Form>
   );

@@ -16,7 +16,6 @@ export const TestProvider = ({ children }: { children: React.ReactNode }) => {
   const [variable, setVariable] = useState(
     cart?.lines[1]?.merchandise.product.handle
   );
-  console.log(variable, "variable");
   const value = useMemo(
     () => ({
       cart,

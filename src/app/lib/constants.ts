@@ -19,3 +19,18 @@ export const initialVideoSize = {
   clipPath: "inset(0%)",
   matrix: "matrix(1, 0, 0, 1, 0, 0)",
 };
+
+export const cartAttributes = {
+  "send-in-item": [
+    { key: "inkColor", label: "Ink Color", type: "text", value: "red" },
+    { key: "packageSize", label: "Package Size", type: "text", value: "blue" },
+  ],
+  "item-from-store": [
+    { key: "inkColor", label: "Ink Color", type: "text", value: "" },
+    { key: "packageSize", label: "Package Size", type: "text", value: "" },
+  ],
+  "pre-signed-item": [
+    { key: "inkColor", label: "Ink Color", type: "text", value: "" },
+    { key: "packageSize", label: "Package Size", type: "text", value: "" },
+  ],
+};
