@@ -30,6 +30,9 @@ export const InputField = styled.input`
   }
 `;
 
-export const Label = styled.label`
+export const Label = styled.label<{
+  bold?: string;
+}>`
   position: relative;
+  font-weight: ${({ bold }) => (bold === "true" ? "bold" : "normal")};
 `;

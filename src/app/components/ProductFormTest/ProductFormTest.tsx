@@ -82,8 +82,6 @@ export default function ProductFormTest({
     (p) => p.productType === "add-on"
   )[0].variants;
 
-  console.log(addOns, "addOns");
-
   const handleItemChecked =
     (id: string) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -105,7 +103,9 @@ export default function ProductFormTest({
   return (
     <Form action={prepareItems}>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <label htmlFor="product">{collection.title}</label>
+        <Label htmlFor="product" bold={"true"}>
+          {collection.title}
+        </Label>
         <select
           name="product"
           id="product"
@@ -154,25 +154,45 @@ export default function ProductFormTest({
       )}
       {addOns &&
         addOns.map((addOn) => (
-          <div
-            key={addOn.id}
-            style={{
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
-            <InputField
-              type="checkbox"
-              id={addOn.id}
-              name={addOn.title}
-              checked={
-                selectedAddOns?.find((a) => a.id === addOn.id)?.checked || false
-              }
-              onChange={handleItemChecked(addOn.id)}
-            />
-            <Label htmlFor={addOn.id} data-attr="checkbox">
-              {addOn.title}
-            </Label>
+          <div key={addOn.id}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <InputField
+                type="checkbox"
+                id={addOn.id}
+                name={addOn.title}
+                checked={
+                  selectedAddOns?.find((a) => a.id === addOn.id)?.checked ||
+                  false
+                }
+                onChange={handleItemChecked(addOn.id)}
+              />
+              <Label htmlFor={addOn.id} data-attr="checkbox">
+                {addOn.title}
+              </Label>
+            </div>
+            {selectedAddOns.find((a) => a.id === addOn.id)?.checked && (
+              <div
+                key={addOn.id}
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                <Label
+                  htmlFor={addOn.title}
+                  bold={"true"}
+                >{`${addOn.title} *`}</Label>
+                <input
+                  type="text"
+                  id={addOn.title}
+                  name={addOn.title}
+                  // value={attribute.value}
+                  onChange={(e) => console.log(e.target.value)}
+                />
+              </div>
+            )}
           </div>
         ))}
 
