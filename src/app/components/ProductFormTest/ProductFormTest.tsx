@@ -8,12 +8,13 @@ import { Attributes, Collection, Product } from "@/app/lib/shopify/types";
 import Form from "next/form";
 import { useEffect, useState } from "react";
 import { Checkbox, InputField, Label } from "./styled";
+import InputTest from "../InputTest/InputTest";
 
-type AddOns = {
-  id: string;
-  title: string;
-  ckecked: boolean;
-};
+// type AddOns = {
+//   id: string;
+//   title: string;
+//   ckecked: boolean;
+// };
 
 type CartAttribute = {
   name: string;
@@ -36,25 +37,26 @@ export default function ProductFormTest({
   const [selectedVariant, setSelectedVariant] = useState<string>();
   const [selectedAddOns, setSelectedAddOns] = useState([]);
   console.log(selectedAddOns, "selectedAddOns");
-  const [attributes, setAttributes] = useState<Attributes[]>([]);
 
   useEffect(() => {
     if (cart) {
       const productLine = cart.lines.find(
         (line) => line.merchandise.product.handle !== "add-ons"
-      ).merchandise;
-      setSelectedProduct(productLine.product.handle);
-      setSelectedVariant(productLine.selectedOptions[0].value);
-      setAttributes(productLine.attributes);
+      );
+      setSelectedProduct(productLine.merchandise.product.handle);
+      setSelectedVariant(productLine.merchandise.selectedOptions[0].value);
       const addOns = cart.lines.filter(
         (line) => line.merchandise.product.handle === "add-ons"
       );
       if (addOns)
         setSelectedAddOns(
-          addOns.map((a) => ({
-            id: a.merchandise.id,
-            title: a.merchandise.title,
+          addOns.map((addOn) => ({
+            id: addOn.merchandise.id,
+            title: addOn.merchandise.title,
             checked: true,
+            value: productLine.attributes.find(
+              (a) => a.key === addOn.merchandise.title
+            )?.value,
           }))
         );
     }
@@ -103,7 +105,16 @@ export default function ProductFormTest({
   return (
     <Form action={prepareItems}>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <Label htmlFor="product" bold={"true"}>
+        <InputTest
+          type="text"
+          name="product"
+          bold
+          label={collection.title}
+          selectedProduct={selectedProduct}
+          onChange={setSelectedProduct}
+          options={products}
+        />
+        {/* <Label htmlFor="product" bold={"true"}>
           {collection.title}
         </Label>
         <select
@@ -117,8 +128,8 @@ export default function ProductFormTest({
               {product.description}
             </option>
           ))}
-        </select>
-        {productVariants && (
+        </select> */}
+        {/* {productVariants && (
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label htmlFor="variant">{productVariants.options[0].name}</label>
             <select
@@ -134,9 +145,20 @@ export default function ProductFormTest({
               ))}
             </select>
           </div>
+        )} */}
+        {productVariants && (
+          <InputTest
+            type="text"
+            label={productVariants.options[0].name}
+            name="variant"
+            bold
+            selectedProduct={selectedVariant}
+            onChange={setSelectedVariant}
+            options={productVariants.variants}
+          />
         )}
       </div>
-      {cartAttributes[collection.handle as keyof typeof cartAttributes]?.map(
+      {/* {cartAttributes[collection.handle as keyof typeof cartAttributes]?.map(
         (attribute: CartAttribute) => (
           <div
             key={attribute.name}
@@ -151,7 +173,7 @@ export default function ProductFormTest({
             />
           </div>
         )
-      )}
+      )} */}
       {addOns &&
         addOns.map((addOn) => (
           <div key={addOn.id}>
@@ -188,8 +210,16 @@ export default function ProductFormTest({
                   type="text"
                   id={addOn.title}
                   name={addOn.title}
-                  // value={attribute.value}
-                  onChange={(e) => console.log(e.target.value)}
+                  value={
+                    selectedAddOns.find((a) => a.id === addOn.id)?.value || ""
+                  }
+                  onChange={(e) =>
+                    setSelectedAddOns((prev) =>
+                      prev.map((a) =>
+                        a.id === addOn.id ? { ...a, value: e.target.value } : a
+                      )
+                    )
+                  }
                 />
               </div>
             )}
@@ -200,20 +230,3 @@ export default function ProductFormTest({
     </Form>
   );
 }
-
-// const tick = (
-//   <svg
-//     xmlns="http://www.w3.org/2000/svg"
-//     width="9"
-//     height="7"
-//     viewBox="0 0 9 7"
-//     fill="none"
-//   >
-//     <path
-//       fillRule="evenodd"
-//       clipRule="evenodd"
-//       d="M2.46989 6.79557L0.219933 4.69527C-0.073311 4.42153 -0.073311 3.97907 0.219933 3.70533C0.513177 3.43159 0.987167 3.43159 1.28041 3.70533L2.95738 5.27075L7.68078 0.244745C7.95078 -0.049296 8.42402 -0.0829008 8.73751 0.168435C9.0525 0.42047 9.08925 0.861532 8.81926 1.15487L3.56936 6.75566C3.43362 6.90408 3.23712 6.99229 3.02863 6.99999C2.80138 7.00069 2.61013 6.92718 2.46989 6.79557Z"
-//       fill="black"
-//     ></path>
-//   </svg>
-// );
