@@ -112,6 +112,7 @@ export type CartProduct = {
   handle: string;
   title: string;
   featuredImage: Image;
+  productType?: string;
 };
 
 export type CartItem = {

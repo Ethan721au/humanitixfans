@@ -6,7 +6,6 @@ import {
 import { isShopifyError } from "../type-guards";
 import {
   addToCartMutation,
-  addToCartTestMutation,
   cartAttributesUpdates,
   createCartMutation,
 } from "./mutations/cart";

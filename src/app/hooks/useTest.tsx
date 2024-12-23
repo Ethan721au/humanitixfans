@@ -1,38 +1,33 @@
-"use client";
+// "use client";
 
-import { createContext, useContext, useMemo, useState } from "react";
-import { useCart } from "./useCart";
+// import { createContext, useContext, useMemo, useState } from "react";
 
-type TestContextType = {
-  cart: any;
-  setVariable: (variable: any) => void;
-};
+// type TestContextType = {
+//   variable: any;
+//   setVariable: (variable: any) => void;
+// };
 
-const TestContext = createContext<TestContextType | undefined>(undefined);
+// const TestContext = createContext<TestContextType | undefined>(undefined);
 
-export const TestProvider = ({ children }: { children: React.ReactNode }) => {
-  const { cart } = useCart();
-  console.log(cart, "cart");
-  const [variable, setVariable] = useState(
-    cart?.lines[1]?.merchandise.product.handle
-  );
-  const value = useMemo(
-    () => ({
-      cart,
-      setVariable,
-    }),
-    []
-  );
+// export const TestProvider = ({ children }: { children: React.ReactNode }) => {
+//   const [variable, setVariable] = useState("");
+//   const value = useMemo(
+//     () => ({
+//       variable,
+//       setVariable,
+//     }),
+//     []
+//   );
 
-  return <TestContext.Provider value={value}>{children}</TestContext.Provider>;
-};
+//   return <TestContext.Provider value={value}>{children}</TestContext.Provider>;
+// };
 
-export function useTest() {
-  const context = useContext(TestContext);
+// export function useTest() {
+//   const context = useContext(TestContext);
 
-  if (context === undefined) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
+//   if (context === undefined) {
+//     throw new Error("useCart must be used within a CartProvider");
+//   }
 
-  return context;
-}
+//   return context;
+// }

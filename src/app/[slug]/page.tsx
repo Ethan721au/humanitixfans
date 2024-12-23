@@ -3,8 +3,6 @@ import { redirectToCheckout } from "../components/Cart/actions";
 import { getCollections } from "../lib/shopify";
 import { Breadcrumbs, ProductSection } from "./styled";
 import Image from "next/image";
-// import ProductForm from "../components/ProductForm/ProductForm";
-import ProductFormTest from "../components/ProductFormTest/ProductFormTest";
 import ProductForm from "../components/ProductForm/ProductForm";
 
 export default async function CollectionPage({
@@ -31,8 +29,7 @@ export default async function CollectionPage({
         ) : (
           "Default image"
         )}
-        {/* {collection && <ProductForm collection={collection} />} */}
-        {collection && <ProductFormTest collection={collection} />}
+        {collection && <ProductForm collection={collection} />}
       </ProductSection>
       <form action={redirectToCheckout}>
         <button>checkout</button>
