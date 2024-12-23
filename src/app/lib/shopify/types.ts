@@ -113,6 +113,7 @@ export type CartProduct = {
   title: string;
   featuredImage: Image;
   productType?: string;
+  collections: Connection<ShopifyCollection>;
 };
 
 export type CartItem = {

@@ -33,7 +33,7 @@ export default function Input({
           checked={checked}
           id={product?.id}
           value={typeof value === "string" ? value : ""}
-          onChange={(e) => onChange(e.target.checked || e.target.value)}
+          onChange={(e) => onChange(e.target.value || e.target.checked)}
         />
       )}
       <Label htmlFor={name} bold={bold ? "true" : "false"} data-attr={type}>
@@ -46,6 +46,9 @@ export default function Input({
           value={selectedProduct}
           onChange={(e) => onChange(e.target.value)}
         >
+          <option value="default" disabled>
+            --Select a {name}--
+          </option>
           {options?.map((option) => (
             <option
               key={option.id}

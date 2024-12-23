@@ -56,6 +56,15 @@ export const productFragment = /* GraphQl */ `
         }
       }
     }
+    collections(first: 5) {
+      edges {
+        node {
+          id
+          handle
+          title
+        }
+      }
+    }
     seo {
       ...seo
     }

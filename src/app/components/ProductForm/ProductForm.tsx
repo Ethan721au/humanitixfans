@@ -1,8 +1,7 @@
 "use client";
 
-import { useCart } from "@/app/hooks/useCart";
 import { getCollectionProducts } from "@/app/lib/shopify";
-import { Collection, Product } from "@/app/lib/shopify/types";
+import { Cart, Collection, Product } from "@/app/lib/shopify/types";
 import Form from "next/form";
 import { useEffect, useState } from "react";
 import Input from "../Input/Input";
@@ -17,19 +16,15 @@ type AddOn = {
 
 export default function ProductForm({
   collection,
+  cart,
 }: {
   collection: Collection;
+  cart?: Cart;
 }) {
-  const { cart } = useCart();
-  const [collectionProducts, setCollectionProducts] = useState<
-    Product[] | undefined
-  >(undefined);
-
-  const [selectedProduct, setSelectedProduct] = useState<string | undefined>(
-    undefined
-  );
-  const [selectedVariant, setSelectedVariant] = useState<string | undefined>();
-  const [selectedAddOns, setSelectedAddOns] = useState<AddOn[] | undefined>([]);
+  const [collectionProducts, setCollectionProducts] = useState<Product[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<string>("default");
+  const [selectedVariant, setSelectedVariant] = useState<string>("default");
+  const [selectedAddOns, setSelectedAddOns] = useState<AddOn[]>([]);
 
   useEffect(() => {
     if (cart) {
@@ -39,13 +34,10 @@ export default function ProductForm({
 
       if (productLine) {
         setSelectedProduct(productLine.merchandise.product.handle);
-
         setSelectedVariant(productLine.merchandise.selectedOptions[0].value);
-
         const addOns = cart.lines.filter(
           (line) => line.merchandise.product.handle === "add-ons"
         );
-
         if (addOns) {
           setSelectedAddOns(
             addOns.map((addOn) => ({
@@ -82,7 +74,7 @@ export default function ProductForm({
 
   const addOns = collectionProducts?.filter(
     (p) => p.productType === "add-on"
-  )[0].variants;
+  )[0]?.variants;
 
   const prepareItems = (formData: FormData) => {
     // const { product, variant } = Object.fromEntries(formData.entries());
@@ -93,7 +85,7 @@ export default function ProductForm({
   return (
     <Wrapper>
       <Form action={prepareItems}>
-        {selectedProduct && selectedVariant && (
+        {products && (
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Input
               type="text"
@@ -137,12 +129,29 @@ export default function ProductForm({
                 }
                 label={addOn.title}
                 onChange={(checked) => {
+                  console.log(checked, "checked");
+                  console.log(typeof checked);
                   if (typeof checked === "boolean") {
-                    setSelectedAddOns((prev) =>
-                      prev?.map((a) =>
-                        a.id === addOn.id ? { ...a, checked } : a
-                      )
-                    );
+                    setSelectedAddOns((prev) => {
+                      console.log(prev, "prev");
+                      const existingAddOn = prev.find((a) => a.id === addOn.id);
+
+                      if (existingAddOn) {
+                        return prev.map((a) =>
+                          a.id === addOn.id ? { ...a, checked } : a
+                        );
+                      } else {
+                        return [
+                          ...prev,
+                          {
+                            id: addOn.id,
+                            title: addOn.title,
+                            checked,
+                            value: "",
+                          },
+                        ];
+                      }
+                    });
                   }
                 }}
               />
@@ -158,7 +167,7 @@ export default function ProductForm({
                   onChange={(value) => {
                     if (typeof value === "string") {
                       setSelectedAddOns((prev) =>
-                        prev?.map((a) =>
+                        prev.map((a) =>
                           a.id === addOn.id ? { ...a, value } : a
                         )
                       );

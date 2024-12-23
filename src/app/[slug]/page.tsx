@@ -8,11 +8,15 @@ import ProductForm from "../components/ProductForm/ProductForm";
 export default async function CollectionPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
   const collections = await getCollections();
   const collection = collections.find((c) => c.handle === slug);
+
+  if (!collection) {
+    return <div>Collection not found</div>;
+  }
 
   return (
     <section>
