@@ -1,5 +1,13 @@
 import { Product, ProductVariant } from "@/app/lib/shopify/types";
-import { InputField, Label, Select, Wrapper } from "./styled";
+import {
+  ImageContainer,
+  ImageWrapper,
+  InputField,
+  Label,
+  Select,
+  Wrapper,
+} from "./styled";
+import Image from "next/image";
 
 export default function Input({
   type,
@@ -15,7 +23,7 @@ export default function Input({
 }: {
   type: string;
   name: string;
-  label: string;
+  label?: string;
   bold?: boolean;
   product?: Product;
   options?: Product[] | ProductVariant[];
@@ -26,20 +34,30 @@ export default function Input({
 }) {
   return (
     <Wrapper type={type}>
-      {name !== "product" && name !== "variant" && (
-        <InputField
-          type={type}
-          name={name}
-          checked={checked}
-          id={product?.id}
-          value={typeof value === "string" ? value : ""}
-          onChange={(e) => onChange(e.target.value || e.target.checked)}
-        />
-      )}
+      {name !== "Send-in item" &&
+        name !== "variant" &&
+        name !== "Item from store" && (
+          <InputField
+            type={type}
+            name={name}
+            checked={checked}
+            id={name}
+            value={typeof value === "string" ? value : ""}
+            onChange={(e) => onChange(e.target.value || e.target.checked)}
+          />
+        )}
       <Label htmlFor={name} bold={bold ? "true" : "false"} data-attr={type}>
         {label}
+        {product?.featuredImage && (
+          <ImageWrapper>
+            <ImageContainer>
+              <Image src={product.featuredImage.url} alt="" fill />
+            </ImageContainer>
+          </ImageWrapper>
+        )}
       </Label>
-      {(name === "product" || name === "variant") && (
+
+      {(name === "Send-in item" || name === "variant") && (
         <Select
           id={name}
           name={name}
@@ -47,14 +65,14 @@ export default function Input({
           onChange={(e) => onChange(e.target.value)}
         >
           <option value="default" disabled>
-            --Select a {name}--
+            --Select a product--
           </option>
           {options?.map((option) => (
             <option
               key={option.id}
-              value={name === "product" ? option.handle : option.title}
+              value={name === "variant" ? option.title : option.handle}
             >
-              {name === "product" ? option.description : option.title}
+              {name === "variant" ? option.title : option.description}
             </option>
           ))}
         </Select>

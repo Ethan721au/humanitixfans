@@ -74,3 +74,22 @@ export const Select = styled.select`
   border-radius: 4px;
   border: 1px solid #e5e5e5;
 `;
+
+export const ImageWrapper = styled.div`
+  padding: 10px;
+  height: 100px;
+  width: 100px;
+  border-radius: 4px;
+  border: 1px solid black;
+  cursor: pointer;
+
+  /* input:checked ~ & {
+    border-color: red;
+  } */
+`;
+
+export const ImageContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  position: relative;
+`;

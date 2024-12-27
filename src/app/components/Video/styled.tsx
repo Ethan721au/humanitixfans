@@ -19,14 +19,14 @@ export const Wrapper = styled.div<{
   clip-path: ${(props) => props.videosize.clipPath};
 `;
 
-export const Videogg = styled.div`
-  overflow: hidden;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  height: 100%;
-  width: 100%;
-`;
+// export const Videogg = styled.div`
+//   overflow: hidden;
+//   position: absolute;
+//   left: 0px;
+//   top: 0px;
+//   height: 100%;
+//   width: 100%;
+// `;
 
 export const VideoContainer = styled.video`
   position: absolute;

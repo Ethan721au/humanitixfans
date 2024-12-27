@@ -8,7 +8,7 @@ export const HIDDEN_PRODUCT_TAG = "product_hidden";
 
 export const SHOPIFY_GRAPHQL_API_ENDPOINT = "/api/2024-10/graphql.json";
 
-export const excludedKeys = ["Send-in item", "inkColor", "variant"];
+// export const excludedKeys = ["Send-in item", "inkColor", "variant"];
 
 export const video = {
   desktop: "https://static.humanitix.com/website/videos/hx_home.mp4",
@@ -34,3 +34,9 @@ export const cartAttributes = {
     { name: "packageSize", label: "Package Size", type: "text", value: "" },
   ],
 };
+
+export const addOnsKeys = [
+  "Character Name",
+  "Personalization",
+  "Quote up to 8 words",
+];
