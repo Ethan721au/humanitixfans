@@ -21,7 +21,7 @@ export const InputField = styled.input<{
 }>`
   appearance: none;
   outline: none;
-
+  display: ${({ type }) => (type === "radio" ? "none" : "block")};
   width: ${({ type }) => (type === "checkbox" ? "16px" : "100%")};
   height: ${({ type }) => (type === "checkbox" ? "16px" : "100%")};
   border-radius: 4px;
@@ -45,8 +45,12 @@ export const InputField = styled.input<{
 
 export const Label = styled.label<{
   bold?: string;
+  type?: string;
 }>`
   position: relative;
+  display: ${({ type }) => (type === "radio" ? "flex" : "block")};
+  align-items: center;
+  gap: 20px;
   font-weight: ${({ bold }) => (bold === "true" ? "bold" : "normal")};
 
   &::before {
@@ -83,9 +87,9 @@ export const ImageWrapper = styled.div`
   border: 1px solid black;
   cursor: pointer;
 
-  /* input:checked ~ & {
+  input:checked ~ & {
     border-color: red;
-  } */
+  }
 `;
 
 export const ImageContainer = styled.div`

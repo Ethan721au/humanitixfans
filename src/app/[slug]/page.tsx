@@ -4,6 +4,7 @@ import { getCollections } from "../lib/shopify";
 import { Breadcrumbs, ProductSection } from "./styled";
 import Image from "next/image";
 import ProductForm from "../components/ProductForm/ProductForm";
+import { Collection } from "../lib/shopify/types";
 
 export default async function CollectionPage({
   params,
@@ -11,8 +12,10 @@ export default async function CollectionPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const collections = await getCollections();
-  const collection = collections.find((c) => c.handle === slug);
+  // const collections = await getCollections();
+  const collections = JSON.parse(JSON.stringify(await getCollections()));
+
+  const collection = collections.find((c: Collection) => c.handle === slug);
 
   if (!collection) {
     return <div>Collection not found</div>;

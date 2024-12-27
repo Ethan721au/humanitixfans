@@ -50,7 +50,7 @@ export default function ProductForm({
       );
 
       if (productLine) {
-        setSelectedProduct(productLine.merchandise.product.handle);
+        setSelectedProduct(productLine);
         setSelectedVariant(productLine.merchandise.selectedOptions[0].value);
         const addOns = cart.lines.filter(
           (line) => line.merchandise.product.handle === "add-ons"
@@ -81,8 +81,6 @@ export default function ProductForm({
     (p) => p.productType === "product"
   );
 
-  console.log(products, "products");
-
   const productsWithVariants = products?.filter(
     (product) => product.variants.length > 1
   );
@@ -94,6 +92,8 @@ export default function ProductForm({
   const addOns = collectionProducts?.filter(
     (p) => p.productType === "add-on"
   )[0]?.variants;
+
+  console.log(addOns, "addOns");
 
   const prepareItems = async (formData: FormData) => {
     const items = Object.fromEntries(formData.entries());
@@ -204,6 +204,8 @@ export default function ProductForm({
     );
   };
 
+  const handleSelectedProduct = (product: string) => {};
+
   const renderItems = (name: string) => {
     switch (name) {
       case "Send-in item": {
@@ -214,7 +216,7 @@ export default function ProductForm({
                 type="text"
                 name={collection.title}
                 bold
-                label={collection.title}
+                label={`${collection.title} *`}
                 selectedProduct={selectedProduct}
                 onChange={(product) => {
                   setSelectedProduct(product as string);
@@ -224,7 +226,7 @@ export default function ProductForm({
               {productVariants && (
                 <Input
                   type="text"
-                  label={productVariants.options[0].name}
+                  label={`${productVariants.options[0].name} *`}
                   name="variant"
                   bold
                   selectedProduct={selectedVariant}
@@ -248,7 +250,7 @@ export default function ProductForm({
                   selectedAddOns?.find((a) => a.id === addOn.id)?.checked ||
                   false
                 }
-                label={addOn.title}
+                label={`${addOn.title} (+$${Number(addOn?.price.amount).toFixed(0)})`}
                 onChange={(checked) =>
                   handleAddOnChange(addOn.id, checked as boolean)
                 }
@@ -274,7 +276,7 @@ export default function ProductForm({
         if (products)
           return (
             <div>
-              <legend>Item from store *</legend>
+              <strong>{`${collection.title} *`}</strong>
               {products.map((product) => (
                 <div
                   style={{ display: "flex", flexDirection: "column" }}
@@ -283,8 +285,7 @@ export default function ProductForm({
                   <Input
                     type="radio"
                     name={collection.title}
-                    bold
-                    label={product.title}
+                    label={`${product.title} (+$${Number(product?.variants[0].price.amount).toFixed(0)})`}
                     selectedProduct={selectedProduct}
                     product={product}
                     onChange={(product) => {

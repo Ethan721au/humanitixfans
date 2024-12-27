@@ -50,8 +50,8 @@ export default function Input({
         htmlFor={product?.id || name}
         bold={bold ? "true" : "false"}
         data-attr={type}
+        type={type}
       >
-        {label}
         {name === "Item from store" && (
           <InputField
             type={type}
@@ -68,6 +68,7 @@ export default function Input({
             </ImageContainer>
           </ImageWrapper>
         )}
+        {label}
       </Label>
       {(name === "Send-in item" || name === "variant") && (
         <Select
