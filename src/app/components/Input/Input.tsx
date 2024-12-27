@@ -46,8 +46,21 @@ export default function Input({
             onChange={(e) => onChange(e.target.value || e.target.checked)}
           />
         )}
-      <Label htmlFor={name} bold={bold ? "true" : "false"} data-attr={type}>
+      <Label
+        htmlFor={product?.id || name}
+        bold={bold ? "true" : "false"}
+        data-attr={type}
+      >
         {label}
+        {name === "Item from store" && (
+          <InputField
+            type={type}
+            onChange={(e) => onChange(e.target.value)}
+            name={name}
+            id={product?.id}
+            value={product?.title}
+          />
+        )}
         {product?.featuredImage && (
           <ImageWrapper>
             <ImageContainer>
@@ -56,7 +69,6 @@ export default function Input({
           </ImageWrapper>
         )}
       </Label>
-
       {(name === "Send-in item" || name === "variant") && (
         <Select
           id={name}

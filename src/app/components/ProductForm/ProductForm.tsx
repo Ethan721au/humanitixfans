@@ -39,6 +39,7 @@ export default function ProductForm({
   const [message, action, isPending] = useActionState(updateCart, null);
   const [collectionProducts, setCollectionProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<string>("default");
+  console.log(selectedProduct, "selectedProduct");
   const [selectedVariant, setSelectedVariant] = useState<string>("default");
   const [selectedAddOns, setSelectedAddOns] = useState<AddOn[]>([]);
 
@@ -273,7 +274,7 @@ export default function ProductForm({
         if (products)
           return (
             <div>
-              <legend>Item from store</legend>
+              <legend>Item from store *</legend>
               {products.map((product) => (
                 <div
                   style={{ display: "flex", flexDirection: "column" }}
@@ -283,7 +284,7 @@ export default function ProductForm({
                     type="radio"
                     name={collection.title}
                     bold
-                    // label={collection.title}
+                    label={product.title}
                     selectedProduct={selectedProduct}
                     product={product}
                     onChange={(product) => {
