@@ -13,25 +13,34 @@ import {
   Testing,
 } from "./styled";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { priceFormatter } from "../lib/utils";
+import { useRouter } from "next/navigation";
+import { Collection } from "../lib/shopify/types";
 
 export default function CartPage() {
+  const router = useRouter();
   const { cart } = useCart();
-  const [isCartEdited, setIsCartEdited] = useState(false);
   console.log(cart, "cart");
-
-  const products = cart?.lines.filter(
-    (line) => !addOnsKeys.includes(line.merchandise.title)
+  const [isCartEdited, setIsCartEdited] = useState(false);
+  const [collection, setCollection] = useState<Collection | undefined>(
+    undefined
   );
 
-  console.log(products, "products");
+  useEffect(() => {
+    if (!isCartEdited) router.replace("/cart");
+  }, [isCartEdited, router]);
+
+  const handleEditCart = (collection: Collection) => {
+    router.push("/cart?edited=true");
+    setIsCartEdited(true);
+    setCollection(collection);
+  };
 
   const renderCartItems = () => {
     const products = cart?.lines.filter(
       (line) => !addOnsKeys.includes(line.merchandise.title)
     );
-    console.log(products, "products");
 
     return products?.map((product) => (
       <ProductWrapper key={product.id}>
@@ -54,7 +63,15 @@ export default function CartPage() {
           <div>{product.quantity}</div>
           <div>{priceFormatter(product.cost.totalAmount.amount, 2)}</div>
         </Product>
-        <button>Edit item</button>
+        <button
+          onClick={() =>
+            handleEditCart(
+              product.merchandise.product.collections.edges[0].node
+            )
+          }
+        >
+          Edit item
+        </button>
       </ProductWrapper>
     ));
   };
@@ -64,8 +81,12 @@ export default function CartPage() {
       <Link href="/">
         <strong>Home</strong>
       </Link>
-      <ProductSection>{cart && renderCartItems()}</ProductSection>
-      {isCartEdited && <Testing />}
+      {cart && <ProductSection>{renderCartItems()}</ProductSection>}
+      {isCartEdited && (
+        <Testing>
+          <ProductForm isEditCart collection={collection} />
+        </Testing>
+      )}
     </PageWrapper>
   );
 }

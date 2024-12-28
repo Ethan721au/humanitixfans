@@ -3,6 +3,7 @@
 import { getCollectionProducts } from "@/app/lib/shopify";
 import {
   Attributes,
+  CartProduct,
   Collection,
   Product,
   ProductVariant,
@@ -31,17 +32,18 @@ type Line = {
 
 export default function ProductForm({
   collection,
-  isCart = false,
+  isEditCart = false,
 }: {
   collection?: Collection;
-  isCart?: boolean;
+  isEditCart?: boolean;
 }) {
   const { cart, addCartItem } = useCart();
   const [message, action, isPending] = useActionState(updateCart, null);
   const [collectionProducts, setCollectionProducts] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
-    undefined
-  );
+  // console.log(collectionProducts, "collectionProducts");
+  const [selectedProduct, setSelectedProduct] = useState<
+    Product | CartProduct | undefined
+  >(undefined);
   const [selectedVariant, setSelectedVariant] = useState<
     ProductVariant | undefined
   >(undefined);
@@ -49,17 +51,18 @@ export default function ProductForm({
   const [additionalInfo, setAdditionalInfo] = useState<string>("");
 
   useEffect(() => {
-    if (!isCart && collection)
+    if (collection)
       getCollectionProducts({ collection: collection.handle }).then(
         (products) => setCollectionProducts(products)
       );
-    if (isCart && cart && cart?.lines.length > 0) {
-      const productLine = cart.lines.find(
-        (line) => line.merchandise.product.handle !== "add-ons"
+    if (isEditCart && cart && cart?.lines.length > 0) {
+      const cartProduct = cart.lines.find((line) =>
+        line.attributes?.some((a) => a.value === collection?.title)
       );
 
-      if (productLine) {
-        // setSelectedProduct(productLine);
+      console.log(cartProduct, "cartProduct");
+      if (cartProduct) {
+        setSelectedProduct(cartProduct.merchandise.product);
         // setSelectedVariant(productLine.merchandise.selectedOptions[0].value);
         // const addOns = cart.lines.filter(
         //   (line) => line.merchandise.product.handle === "add-ons"
@@ -78,7 +81,7 @@ export default function ProductForm({
         // }
       }
     }
-  }, [cart, isCart, collection]);
+  }, [cart, isEditCart, collection]);
 
   const products = collectionProducts?.filter(
     (p) => p.productType === "product"
@@ -332,7 +335,11 @@ export default function ProductForm({
           />
         )}
         {selectedProduct && renderItems("Add On")}
-        <button>{isPending ? "adding to cart..." : "add to cart"}</button>
+        <button>
+          {isPending
+            ? `${isEditCart ? "updating cart" : "adding to cart"}...`
+            : `${isEditCart ? "update cart" : "add to cart"}`}
+        </button>
       </Form>
     </Wrapper>
   );

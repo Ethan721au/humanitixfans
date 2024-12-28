@@ -9,7 +9,7 @@ const DynamicOverlay = () => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (searchParams.get("cart") === "edited") {
+    if (searchParams.get("edited") === "true") {
       setIsOverlayOpen(true);
     } else {
       setIsOverlayOpen(false);

@@ -187,16 +187,17 @@ export type ShopifyAddToCartOperation = {
 };
 
 export type Collection = ShopifyCollection & {
-  path: string;
+  path?: string;
 };
 
 export type ShopifyCollection = {
+  id?: string;
   handle: string;
   title: string;
-  image: Image;
-  description: string;
-  seo: SEO;
-  updatedAt: string;
+  image?: Image;
+  description?: string;
+  seo?: SEO;
+  updatedAt?: string;
 };
 
 export type ShopifyCollectionsOperation = {

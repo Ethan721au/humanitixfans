@@ -41,4 +41,6 @@ export const Testing = styled.div`
   right: 50px;
   min-height: 600px;
   z-index: 3;
+  padding: 20px;
+  border-radius: 20px;
 `;
