@@ -18,7 +18,6 @@ import { createCartAndSetCookie } from "../Cart/actions";
 
 export default function Header() {
   const { cart } = useCart();
-  console.log(cart);
 
   useEffect(() => {
     if (!cart) {

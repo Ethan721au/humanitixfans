@@ -12,7 +12,6 @@ export default async function CollectionPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  // const collections = await getCollections();
   const collections = JSON.parse(JSON.stringify(await getCollections()));
 
   const collection = collections.find((c: Collection) => c.handle === slug);
@@ -22,7 +21,7 @@ export default async function CollectionPage({
   }
 
   return (
-    <section>
+    <main>
       <Breadcrumbs>
         <Link href="/">
           <strong>Home</strong>
@@ -41,6 +40,6 @@ export default async function CollectionPage({
       <form action={redirectToCheckout}>
         <button>checkout</button>
       </form>
-    </section>
+    </main>
   );
 }

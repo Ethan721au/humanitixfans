@@ -16,13 +16,13 @@ export default function Input({
   bold,
   options,
   product,
-  selectedProduct,
+  selectedProduct = "default",
   onChange,
   checked,
   value,
 }: {
   type: string;
-  name: string;
+  name?: string;
   label?: string;
   bold?: boolean;
   product?: Product;
@@ -81,11 +81,8 @@ export default function Input({
             --Select a product--
           </option>
           {options?.map((option) => (
-            <option
-              key={option.id}
-              value={name === "variant" ? option.title : option.handle}
-            >
-              {name === "variant" ? option.title : option.description}
+            <option key={option.id} value={option.title}>
+              {option.title}
             </option>
           ))}
         </Select>

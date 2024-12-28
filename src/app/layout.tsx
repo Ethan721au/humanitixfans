@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { getCart } from "./lib/shopify";
 import Header from "./components/Header/page";
 import Footer from "./components/Footer/Footer";
+import DynamicOverlay from "./components/DynamicOverlay/DynamicOverlay";
 // import { TestProvider } from "./hooks/useTest";
 
 export const metadata: Metadata = {
@@ -19,15 +20,22 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const cartId = cookieStore.get("cartId")?.value;
+
   const cart = getCart(cartId);
 
   return (
     <html lang="en">
-      <body>
+      <body style={{ position: "relative" }}>
+        <DynamicOverlay />
         <CartProvider cartPromise={cart}>
           {/* <TestProvider> */}
           <Header />
-          <div style={{ paddingTop: "72px", minHeight: "100vh" }}>
+          <div
+            style={{
+              paddingTop: "72px",
+              minHeight: "100vh",
+            }}
+          >
             {children}
           </div>
           <Footer />

@@ -14,6 +14,7 @@ import { Wrapper } from "./styled";
 import { addOnsKeys } from "@/app/lib/constants";
 import { useCart } from "@/app/hooks/useCart";
 import { addItem } from "../Cart/actions";
+import { priceFormatter } from "@/app/lib/utils";
 
 type AddOn = {
   id: string;
@@ -32,50 +33,52 @@ export default function ProductForm({
   collection,
   isCart = false,
 }: {
-  collection: Collection;
+  collection?: Collection;
   isCart?: boolean;
 }) {
   const { cart, addCartItem } = useCart();
   const [message, action, isPending] = useActionState(updateCart, null);
   const [collectionProducts, setCollectionProducts] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<string>("default");
-  console.log(selectedProduct, "selectedProduct");
-  const [selectedVariant, setSelectedVariant] = useState<string>("default");
+  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
+    undefined
+  );
+  const [selectedVariant, setSelectedVariant] = useState<
+    ProductVariant | undefined
+  >(undefined);
   const [selectedAddOns, setSelectedAddOns] = useState<AddOn[]>([]);
+  const [additionalInfo, setAdditionalInfo] = useState<string>("");
 
   useEffect(() => {
+    if (!isCart && collection)
+      getCollectionProducts({ collection: collection.handle }).then(
+        (products) => setCollectionProducts(products)
+      );
     if (isCart && cart && cart?.lines.length > 0) {
       const productLine = cart.lines.find(
         (line) => line.merchandise.product.handle !== "add-ons"
       );
 
       if (productLine) {
-        setSelectedProduct(productLine);
-        setSelectedVariant(productLine.merchandise.selectedOptions[0].value);
-        const addOns = cart.lines.filter(
-          (line) => line.merchandise.product.handle === "add-ons"
-        );
-        if (addOns) {
-          setSelectedAddOns(
-            addOns.map((addOn) => ({
-              id: addOn.merchandise.id,
-              title: addOn.merchandise.title,
-              checked: true,
-              value: productLine.attributes.find(
-                (a) => a.key === addOn.merchandise.title
-              )?.value,
-            }))
-          );
-        }
+        // setSelectedProduct(productLine);
+        // setSelectedVariant(productLine.merchandise.selectedOptions[0].value);
+        // const addOns = cart.lines.filter(
+        //   (line) => line.merchandise.product.handle === "add-ons"
+        // );
+        // if (addOns) {
+        //   setSelectedAddOns(
+        //     addOns.map((addOn) => ({
+        //       id: addOn.merchandise.id,
+        //       title: addOn.merchandise.title,
+        //       checked: true,
+        //       value: productLine.attributes.find(
+        //         (a) => a.key === addOn.merchandise.title
+        //       )?.value,
+        //     }))
+        //   );
+        // }
       }
     }
-  }, [cart, isCart]);
-
-  useEffect(() => {
-    getCollectionProducts({ collection: collection.handle }).then((products) =>
-      setCollectionProducts(products)
-    );
-  }, [collection]);
+  }, [cart, isCart, collection]);
 
   const products = collectionProducts?.filter(
     (p) => p.productType === "product"
@@ -86,22 +89,19 @@ export default function ProductForm({
   );
 
   const productVariants = productsWithVariants?.find(
-    (p) => p.handle === selectedProduct
-  );
+    (p) => p.title === selectedProduct?.title
+  )?.variants;
 
   const addOns = collectionProducts?.filter(
     (p) => p.productType === "add-on"
   )[0]?.variants;
 
-  console.log(addOns, "addOns");
-
   const prepareItems = async (formData: FormData) => {
     const items = Object.fromEntries(formData.entries());
-    console.log(items, "items");
     const products = await getCollectionProducts({
       collection: items.collection as string,
     });
-    const product = products.find((p) => p.handle === items[collection.title]);
+    const product = products.find((p) => p.title === items[collection!.title]);
     const variant =
       product?.variants.find((v) => v.title === items.variant) ||
       product?.variants[0];
@@ -127,7 +127,10 @@ export default function ProductForm({
     const variantId = {
       merchandiseId: variant?.id || "",
       quantity: 1,
-      attributes: productAddOns,
+      attributes: [
+        { key: "Order type", value: collection?.title },
+        ...productAddOns,
+      ],
     };
 
     const lines = [variantId, ...addOnsIds];
@@ -173,12 +176,13 @@ export default function ProductForm({
   ): Promise<FormData | string | null> {
     const { lines, products } = await prepareItems(formData);
 
-    // prepareOptimisticCart(lines, products, addCartItem);
-    // setSelectedProduct("default");
-    // setSelectedVariant("default");
-    // setSelectedAddOns([]);
+    prepareOptimisticCart(lines, products, addCartItem);
+    setSelectedProduct(undefined);
+    setSelectedVariant(undefined);
+    setSelectedAddOns([]);
+    setAdditionalInfo("");
 
-    // return addItem(state, lines);
+    return addItem(state, lines);
   }
 
   const handleAddOnChange = (addOnId: string, checked: boolean) => {
@@ -204,9 +208,7 @@ export default function ProductForm({
     );
   };
 
-  const handleSelectedProduct = (product: string) => {};
-
-  const renderItems = (name: string) => {
+  const renderItems = (name: string | undefined) => {
     switch (name) {
       case "Send-in item": {
         if (products)
@@ -214,26 +216,30 @@ export default function ProductForm({
             <div style={{ display: "flex", flexDirection: "column" }}>
               <Input
                 type="text"
-                name={collection.title}
+                name={collection?.title}
                 bold
-                label={`${collection.title} *`}
-                selectedProduct={selectedProduct}
+                label={`${collection?.title} *`}
+                selectedProduct={selectedProduct?.title}
                 onChange={(product) => {
-                  setSelectedProduct(product as string);
+                  setSelectedProduct(
+                    products?.find((p) => p.title === product)
+                  );
                 }}
                 options={products}
               />
               {productVariants && (
                 <Input
                   type="text"
-                  label={`${productVariants.options[0].name} *`}
+                  label={`${productVariants[0].selectedOptions[0].name} *`}
                   name="variant"
                   bold
-                  selectedProduct={selectedVariant}
+                  selectedProduct={selectedVariant?.title}
                   onChange={(variant) => {
-                    setSelectedVariant(variant as string);
+                    setSelectedVariant(
+                      productVariants?.find((v) => v.title === variant)
+                    );
                   }}
-                  options={productVariants.variants}
+                  options={productVariants}
                 />
               )}
             </div>
@@ -241,42 +247,48 @@ export default function ProductForm({
       }
       case "Add On": {
         if (addOns)
-          return addOns.map((addOn) => (
-            <div key={addOn.id}>
-              <Input
-                type="checkbox"
-                name={addOn.title}
-                checked={
-                  selectedAddOns?.find((a) => a.id === addOn.id)?.checked ||
-                  false
-                }
-                label={`${addOn.title} (+$${Number(addOn?.price.amount).toFixed(0)})`}
-                onChange={(checked) =>
-                  handleAddOnChange(addOn.id, checked as boolean)
-                }
-              />
-              {selectedAddOns?.find((a) => a.id === addOn.id)?.checked && (
-                <Input
-                  label={`${addOn.title} *`}
-                  type="text"
-                  name={addOn.title}
-                  bold
-                  value={
-                    selectedAddOns.find((a) => a.id === addOn.id)?.value || ""
-                  }
-                  onChange={(value) =>
-                    handleAddOnValueChange(addOn.id, value as string)
-                  }
-                />
-              )}
+          return (
+            <div>
+              <strong>Autograph Add-Ons</strong>
+              {addOns.map((addOn) => (
+                <div key={addOn.id}>
+                  <Input
+                    type="checkbox"
+                    name={addOn.title}
+                    checked={
+                      selectedAddOns?.find((a) => a.id === addOn.id)?.checked ||
+                      false
+                    }
+                    label={`${addOn.title} (+${priceFormatter(addOn?.price.amount, 0)})`}
+                    onChange={(checked) =>
+                      handleAddOnChange(addOn.id, checked as boolean)
+                    }
+                  />
+                  {selectedAddOns?.find((a) => a.id === addOn.id)?.checked && (
+                    <Input
+                      label={`${addOn.title} *`}
+                      type="text"
+                      name={addOn.title}
+                      bold
+                      value={
+                        selectedAddOns.find((a) => a.id === addOn.id)?.value ||
+                        ""
+                      }
+                      onChange={(value) =>
+                        handleAddOnValueChange(addOn.id, value as string)
+                      }
+                    />
+                  )}
+                </div>
+              ))}
             </div>
-          ));
+          );
       }
       case "Item from store": {
         if (products)
           return (
             <div>
-              <strong>{`${collection.title} *`}</strong>
+              <strong>{`${collection?.title} *`}</strong>
               {products.map((product) => (
                 <div
                   style={{ display: "flex", flexDirection: "column" }}
@@ -284,12 +296,14 @@ export default function ProductForm({
                 >
                   <Input
                     type="radio"
-                    name={collection.title}
+                    name={collection?.title}
                     label={`${product.title} (+$${Number(product?.variants[0].price.amount).toFixed(0)})`}
-                    selectedProduct={selectedProduct}
+                    selectedProduct={selectedProduct?.title}
                     product={product}
                     onChange={(product) => {
-                      setSelectedProduct(product as string);
+                      setSelectedProduct(
+                        products?.find((p) => p.title === product)
+                      );
                     }}
                   />
                 </div>
@@ -306,8 +320,18 @@ export default function ProductForm({
     <Wrapper>
       <Form action={action}>
         <input type="hidden" name="collection" value={collection?.handle} />
-        {renderItems(collection.title)}
-        {renderItems("Add On")}
+        {renderItems(collection?.title)}
+        {selectedProduct && collection?.title === "Item from store" && (
+          <Input
+            type="text"
+            name="Ink color"
+            label="Ink color *"
+            bold
+            value={additionalInfo}
+            onChange={(value) => setAdditionalInfo(value as string)}
+          />
+        )}
+        {selectedProduct && renderItems("Add On")}
         <button>{isPending ? "adding to cart..." : "add to cart"}</button>
       </Form>
     </Wrapper>
